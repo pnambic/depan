@@ -1,0 +1,8 @@
+title: DepAn
+description: Direct manipulation tool for visualization, analysis, and refactoring of dependencies in large applications.
+google_analytics: UA-70444237-2
+show_downloads: true
+theme: jekyll-theme-minimal
+
+gems:
+  - jekyll-mentions
