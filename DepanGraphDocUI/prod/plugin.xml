@@ -37,6 +37,13 @@
             id="com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards.NewSubtractNodesWizard"
             name="Subtract Nodes">
       </wizard>
+      <wizard
+            category="com.google.devtools.depan.eclipse.ui.wizards"
+            class="com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards.NewUnionNodesWizard"
+            icon="icons/or.png"
+            id="com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards.NewUnionNodesWizard"
+            name="Union Nodes">
+      </wizard>
    </extension>
 
 </plugin>
