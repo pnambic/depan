@@ -350,7 +350,7 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            category="com.google.devtools.depan.eclipse.ui.wizards"
+            category="com.google.devtools.depan.eclipse.ui.resources.wizards"
             class="com.google.devtools.depan.view_doc.eclipse.ui.wizards.NewRelationDisplayDocWizard"
             icon="icons/relpicker.png"
             id="com.google.devtools.depan.view_doc.eclipse.ui.wizards.NewEdgeDisplayDocWizard"

@@ -31,14 +31,14 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            category="com.google.devtools.depan.eclipse.ui.wizards"
+            category="com.google.devtools.depan.eclipse.ui.analyzers.wizards"
             class="com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards.NewSubtractNodesWizard"
             icon="icons/not16.png"
             id="com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards.NewSubtractNodesWizard"
             name="Subtract Nodes">
       </wizard>
       <wizard
-            category="com.google.devtools.depan.eclipse.ui.wizards"
+            category="com.google.devtools.depan.eclipse.ui.analyzers.wizards"
             class="com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards.NewUnionNodesWizard"
             icon="icons/or.png"
             id="com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards.NewUnionNodesWizard"

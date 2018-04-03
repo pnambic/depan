@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            category="com.google.devtools.depan.eclipse.ui.wizards"
+            category="com.google.devtools.depan.eclipse.ui.analyzers.wizards"
             class="com.google.devtools.depan.maven.eclipse.NewMavenPomWizard"
             finalPerspective="com.google.devtools.depan.eclipse.perspective"
             icon="icons/eclipse/maven_icon.png"
@@ -12,7 +12,7 @@
             name="New Maven POM Analysis">
       </wizard>
       <wizard
-            category="com.google.devtools.depan.eclipse.ui.wizards"
+            category="com.google.devtools.depan.eclipse.ui.analyzers.wizards"
             class="com.google.devtools.depan.maven.eclipse.NewGraphMLWizard"
             finalPerspective="com.google.devtools.depan.eclipse.perspective"
             icon="icons/eclipse/graphml_16x16.png"

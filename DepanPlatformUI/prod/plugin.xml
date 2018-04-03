@@ -5,8 +5,16 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <category
+            id="com.google.devtools.depan.eclipse.ui.resources.wizards"
+            name="DepAn Resources">
+      </category>
+      <category
+            id="com.google.devtools.depan.eclipse.ui.analyzers.wizards"
+            name="DepAn Analyzers">
+      </category>
+      <category
             id="com.google.devtools.depan.eclipse.ui.wizards"
-            name="DepAn">
+            name="DepAn Legacy">
       </category>
    </extension>
    <extension

@@ -4,14 +4,14 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            category="com.google.devtools.depan.eclipse.ui.wizards"
+            category="com.google.devtools.depan.eclipse.ui.resources.wizards"
             class="com.google.devtools.depan.matchers.eclipse.ui.wizards.NewEdgeMatcherWizard"
             icon="icons/matcher_16x16.png"
             id="com.google.devtools.depan.matchers.eclipse.ui.wizards.NewEdgeMatcherWizard"
             name="Edge Matcher">
       </wizard>
       <wizard
-            category="com.google.devtools.depan.eclipse.ui.wizards"
+            category="com.google.devtools.depan.eclipse.ui.resources.wizards"
             class="com.google.devtools.depan.relations.eclipse.ui.wizards.NewRelationSetWizard"
             icon="icons/relpicker.png"
             id="com.google.devtools.depan.relations.eclipse.ui.wizards.NewRelationSetWizard"
