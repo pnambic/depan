@@ -66,14 +66,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
   protected void fillMenuBar(IMenuManager menuBar) {
     //DepAn menu actions
     MenuManager newMenu = new MenuManager("New...", "New...");
-    IContributionItem newWizards = ContributionItemFactory.NEW_WIZARD_SHORTLIST
-        .create(getActionBarConfigurer().getWindowConfigurer().getWindow());
+    IWorkbenchWindow window = getActionBarConfigurer().getWindowConfigurer().getWindow();
+    IContributionItem newWizards =
+        ContributionItemFactory.NEW_WIZARD_SHORTLIST.create(window);
     newMenu.add(newWizards);
 
     // window menu actions
     MenuManager viewsMenu = new MenuManager("Views", "Views");
-    IContributionItem views = ContributionItemFactory.VIEWS_SHORTLIST
-        .create(getActionBarConfigurer().getWindowConfigurer().getWindow());
+    IContributionItem views =
+        ContributionItemFactory.VIEWS_SHORTLIST.create(window);
     viewsMenu.add(views);
 
     // top level menu
