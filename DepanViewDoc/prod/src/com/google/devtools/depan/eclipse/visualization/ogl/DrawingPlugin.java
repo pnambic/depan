@@ -146,35 +146,41 @@ public class DrawingPlugin implements NodeRenderingPlugin, EdgeRenderingPlugin {
     if (!property.node1.isVisible || !property.node2.isVisible) {
       return false;
     }
+    if (property.strokeWidth <= 0.0f) {
+      return false;
+    }
+
+    // get the real endpoints for the edge. Necessary to have the
+    // real shapes if the nodes are collapsed.
+    NodeRenderingProperty node1 = property.node1.getApparentNode();
+    NodeRenderingProperty node2 = property.node2.getApparentNode();
+
+    // Don't draw self edges.
+    if (node1 == node2) {
+      return false;
+    }
+
     GL2 gl = scene.gl;
     gl.glPushName(property.shapeId);
-    if (property.strokeWidth > 0.0f) {
-      // get the real endpoints for the edge. Necessary to have the
-      // real shapes if the nodes are collapsed.
-      NodeRenderingProperty node1 = property.node1.isCompletelyCollapsed() ?
-          property.node1.collapsedUnder : property.node1;
-      NodeRenderingProperty node2 = property.node2.isCompletelyCollapsed() ?
-          property.node2.collapsedUnder : property.node2;
 
-      Vec2 headVec = new Vec2(
-          property.p1X * GLConstants.FACTOR, property.p1Y * GLConstants.FACTOR);
-      Vec2 tailVec = new Vec2(
-          property.p2X * GLConstants.FACTOR, property.p2Y * GLConstants.FACTOR);
+    Vec2 headVec = new Vec2(
+        property.p1X * GLConstants.FACTOR, property.p1Y * GLConstants.FACTOR);
+    Vec2 tailVec = new Vec2(
+        property.p2X * GLConstants.FACTOR, property.p2Y * GLConstants.FACTOR);
 
-      ArcInfo arcInfo =
-          property.getArcFor(headVec, tailVec, node1.shape, node2.shape);
+    ArcInfo arcInfo = 
+        property.getArcFor(headVec, tailVec, node1.shape, node2.shape);
 
-      gl.glLineWidth(property.strokeWidth);
-      gl.glColor4f(property.strokeColor.getRed() / 255f,
-          property.strokeColor.getGreen() / 255f,
-          property.strokeColor.getBlue() / 255f,
-          property.strokeColor.getAlpha() / 255f);
+    gl.glLineWidth(property.strokeWidth);
+    gl.glColor4f(property.strokeColor.getRed() / 255f,
+        property.strokeColor.getGreen() / 255f,
+        property.strokeColor.getBlue() / 255f,
+        property.strokeColor.getAlpha() / 255f);
 
-      ((Arrow) property.shape).linkShapes(gl, arcInfo);
+    ((Arrow) property.shape).linkShapes(gl, arcInfo);
 
-      if (property.isTextVisible) {
-        paintLabel(property, arcInfo.midpoint());
-      }
+    if (property.isTextVisible) {
+      paintLabel(property, arcInfo.midpoint());
     }
     gl.glPopName();
     return true;

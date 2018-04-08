@@ -245,6 +245,13 @@ public class NodeRenderingProperty extends RenderingProperty {
     return false;
   }
 
+  public NodeRenderingProperty getApparentNode() {
+    if (isCompletelyCollapsed()) {
+      return collapsedUnder.getApparentNode();
+    }
+    return this;
+  }
+
   @Override
   public String toString() {
     MessageBuilder result = new MessageBuilder();

@@ -93,34 +93,23 @@ public class CollapsePlugin implements NodeRenderingPlugin, EdgeRenderingPlugin 
 
   @Override
   public boolean apply(NodeRenderingProperty node) {
-    if (node.collapsedUnder != null) {
-      // if the node is collapsed, get the data.
-      DeltaCollapse store = getStore(node);
-      if (node.isCompletelyCollapsed()) {
-        // the node has finished his move towards the position of its parent
-        if (store != null) {
-          // the node has reached the position of it's parent.
-          // We will not draw it anymore.
-          store.reachedParent = true;
-        }
-        return false;
-      }
-      if (store != null && store.reachedParent) {
-        // The node has already reached the position of his parent previously
-        // set it's position to the position of its parent.
-        node.positionX = node.collapsedUnder.positionX;
-        node.positionY = node.collapsedUnder.positionY;
-        node.targetPositionX = node.positionX;
-        node.targetPositionY = node.positionY;
-        return false;
-      } else {
-        // a collapsed has been requested, but the node has not reached the position
-        // of his parent yet. move it towards its parent.
-        node.targetPositionX = node.collapsedUnder.targetPositionX;
-        node.targetPositionY = node.collapsedUnder.targetPositionY;
-        return true;
-      }
+    if (node.collapsedUnder == null) {
+      return true;
     }
+    if (node.isCompletelyCollapsed()) {
+      // The node has already reached the position of his parent previously
+      // set it's position to the position of its parent.
+      node.positionX = node.collapsedUnder.positionX;
+      node.positionY = node.collapsedUnder.positionY;
+      node.targetPositionX = node.positionX;
+      node.targetPositionY = node.positionY;
+      return false;
+    }
+
+    // a collapsed has been requested, but the node has not reached the position
+    // of his parent yet. move it towards its parent.
+    node.targetPositionX = node.collapsedUnder.targetPositionX;
+    node.targetPositionY = node.collapsedUnder.targetPositionY;
     return true;
   }
 
@@ -132,22 +121,23 @@ public class CollapsePlugin implements NodeRenderingPlugin, EdgeRenderingPlugin 
 
   @Override
   public boolean apply(EdgeRenderingProperty edge) {
+    NodeRenderingProperty node1 = edge.node1.getApparentNode();
+    NodeRenderingProperty node2 = edge.node2.getApparentNode();
+
+    // first node has reached its parent, set the end point position.
     if (edge.node1.isCompletelyCollapsed()) {
-      // first node has reached its parent. set the end point position.
-      edge.p1X = edge.node1.collapsedUnder.positionX;
-      edge.p1Y = edge.node1.collapsedUnder.positionY;
-      if (edge.node2 == edge.node1.collapsedUnder) {
-        // do not draw the edge if both end points are the same node
-        return false;
-      }
+      edge.p1X = node1.positionX;
+      edge.p1Y = node1.positionY;
     }
-    // idem for node 2
+    // second node has reached its parent, set the end point position.
     if (edge.node2.isCompletelyCollapsed()) {
-      edge.p2X = edge.node2.collapsedUnder.positionX;
-      edge.p2Y = edge.node2.collapsedUnder.positionY;
-      if (edge.node1 == edge.node2.collapsedUnder) {
-        return false;
-      }
+      edge.p2X = node2.positionX;
+      edge.p2Y = node2.positionY;
+    }
+
+    // do not draw the edge if both end points are the same node
+    if (node1 == node2) {
+      return false;
     }
     return true;
   }
