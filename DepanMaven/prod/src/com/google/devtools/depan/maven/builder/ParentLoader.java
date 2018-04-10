@@ -59,4 +59,8 @@ public class ParentLoader extends NestingElementHandler {
   public GraphNode getGraphNode(MavenContext context) {
     return label.buildReferenceNode(context);
   }
+
+  public LabelCapture getLabel() {
+    return label;
+  }
 }

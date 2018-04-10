@@ -121,14 +121,29 @@ public class ArtifactElement extends MavenElement {
       }
       result.append(COLON);
       result.append(classifier);
-    } else if (!JAR_PACKAGING.equals(packaging)) {
+    } else if (hasPackaging()) {
       result.append(COLON);
-      result.append(packaging);
+      if (!Strings.isNullOrEmpty(packaging)) {
+        result.append(packaging);
+      }
     }
 
-    result.append(COLON);
-    result.append(version);
+    // Version might be null for "as is" POMs with provided versions.
+    if (null != version) {
+      result.append(COLON);
+      result.append(version);
+    }
     return result.toString();
+  }
+
+  private boolean hasPackaging() {
+    if (Strings.isNullOrEmpty(packaging)) {
+      return false;
+    }
+    if (JAR_PACKAGING.equals(packaging)) {
+      return false;
+    }
+    return true;
   }
 
   @Override
@@ -149,7 +164,9 @@ public class ArtifactElement extends MavenElement {
     int result = 37;
     result = 31 * result + groupId.hashCode();
     result = 31 * result + artifactId.hashCode();
-    result = 31 * result + version.hashCode();
+    if (null != version) {
+      result = 31 * result + version.hashCode();
+    }
     if (null != packaging) {
       result = 31 * result + packaging.hashCode();
     }
@@ -175,13 +192,20 @@ public class ArtifactElement extends MavenElement {
     if (!artifactId.equals(that.artifactId)) {
       return false;
     }
-    if (!version.equals(that.version)) {
+    if (!matchVersion(that)) {
       return false;
     }
     if (!matchPackaging(that)) {
       return false;
     }
     return matchClassifier(that);
+  }
+
+  private boolean matchVersion(ArtifactElement match) {
+    if (null == version) {
+      return null == match.version;
+    }
+    return version.equals(match.version);
   }
 
   private boolean matchPackaging(ArtifactElement match) {

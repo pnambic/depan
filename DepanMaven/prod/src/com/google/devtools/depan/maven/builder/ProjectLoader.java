@@ -107,6 +107,18 @@ public class ProjectLoader extends NestingElementHandler {
    * Provide the project's own GraphNode.
    */
   public GraphNode getProjectNode() {
+    inferFromParent();
     return label.buildDefinitionNode(context);
+  }
+
+  private void inferFromParent() {
+    if (parent == null) {
+      return;
+    }
+    LabelCapture parentLabel = parent.getLabel();
+    if (parentLabel == null) {
+      return;
+      }
+    label.inferFromParent(parentLabel);
   }
 }

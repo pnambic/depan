@@ -102,6 +102,11 @@ public class LabelCapture {
     return cannonicalize(context, definition);
   }
 
+  public void inferFromParent(LabelCapture parent) {
+    if (groupId == null) {
+      groupId = parent.groupId;
+    }
+  }
 
   /**
    * Convert the label from the Maven coordinates
@@ -135,8 +140,15 @@ public class LabelCapture {
     return artifactId.getText();
   }
 
+  /**
+   * Although version is required, it may not be known in standalone
+   * POMs where the version in provided by the parent.
+   */
   private String getVersion() {
-    return version.getText();
+    if (null != version) {
+      return version.getText();
+    }
+    return null;
   }
 
   private String getPackaging() {
