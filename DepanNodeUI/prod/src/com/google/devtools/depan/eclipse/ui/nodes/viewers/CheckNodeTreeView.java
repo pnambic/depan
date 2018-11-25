@@ -18,6 +18,7 @@ package com.google.devtools.depan.eclipse.ui.nodes.viewers;
 
 import com.google.devtools.depan.eclipse.ui.nodes.trees.NodeWrapper;
 import com.google.devtools.depan.eclipse.ui.nodes.trees.NodeWrapperTreeSorter;
+import com.google.devtools.depan.eclipse.ui.nodes.trees.ViewerRoot;
 import com.google.devtools.depan.model.GraphNode;
 
 import com.google.common.collect.Sets;
@@ -70,6 +71,18 @@ public class CheckNodeTreeView extends GraphNodeViewer {
 
   public void setRecursive(boolean recursiveTreeSelect) {
     this.recursiveTreeSelect = recursiveTreeSelect;
+  }
+
+  public boolean getRecursive() {
+    return recursiveTreeSelect;
+  }
+
+  public void handleSelectNone() {
+    super.handleSelectNone();
+    ViewerRoot viewerRoot = (ViewerRoot) tree.getInput();
+    for (Object root : viewerRoot.getRoots()) {
+      tree.setSubtreeChecked(root, false);
+    }
   }
 
   public GraphNode getFirstNode() {

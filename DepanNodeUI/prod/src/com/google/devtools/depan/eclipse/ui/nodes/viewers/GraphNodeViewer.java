@@ -16,7 +16,6 @@
 
 package com.google.devtools.depan.eclipse.ui.nodes.viewers;
 
-import com.google.devtools.depan.eclipse.ui.nodes.NodesUIResources;
 import com.google.devtools.depan.eclipse.ui.nodes.trees.NodeWrapperTreeSorter;
 import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.platform.eclipse.ui.widgets.Selections;
@@ -27,19 +26,12 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
@@ -84,9 +76,6 @@ public class GraphNodeViewer extends Composite {
     }
     result.setLayout(layout);
 
-    ToolBar rightOptions = createToolBar(result);
-    rightOptions.setLayoutData(Widgets.buildTrailFillData());
-
     return result;
   }
 
@@ -110,6 +99,18 @@ public class GraphNodeViewer extends Composite {
     treeViewer.setInput(treeRoots);
     provider.updateExpandState(treeViewer);
     treeViewer.refresh();
+  }
+
+  public void handleSelectNone() {
+    treeViewer.setSelection(StructuredSelection.EMPTY);
+  }
+
+  public void handleCollapseAll() {
+    treeViewer.collapseAll();
+  }
+
+  public void handleExpandAll() {
+    treeViewer.expandAll();
   }
 
   /**
@@ -171,53 +172,5 @@ public class GraphNodeViewer extends Composite {
 
   private void addItemActions(IMenuManager manager, Object menuElement) {
     provider.addItemActions(manager, menuElement);
-  }
-
-  // Tree View Toolbar
-
-  private ToolBar createToolBar(Composite parent) {
-
-    ToolBar result = new ToolBar(parent, SWT.NONE | SWT.FLAT | SWT.RIGHT);
-    result.setLayoutData(new GridData(SWT.END, SWT.FILL, true, false));
-
-    ToolItem collapseButton = createCollapseAllPushIcon(result);
-    collapseButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        collapseAll();
-      }
-    });
-
-    ToolItem expandButton = createExpandAllPushIcon(result);
-    expandButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        expandAll();
-      }
-    });
-
-    return result;
-  }
-
-  private ToolItem createCollapseAllPushIcon(ToolBar parent) {
-    ToolItem result = new ToolItem(parent, SWT.PUSH | SWT.FLAT);
-    Image icon = PlatformUI.getWorkbench().getSharedImages().getImage(
-        ISharedImages.IMG_ELCL_COLLAPSEALL);
-    result.setImage(icon);
-    return result;
-  }
-
-  private ToolItem createExpandAllPushIcon(ToolBar parent) {
-    ToolItem result = new ToolItem(parent, SWT.PUSH | SWT.FLAT);
-    result.setImage(NodesUIResources.IMAGE_EXPANDALL);
-    return result;
-  }
-
-  private void collapseAll() {
-    treeViewer.collapseAll();
-  }
-
-  private void expandAll() {
-    treeViewer.expandAll();
   }
 }

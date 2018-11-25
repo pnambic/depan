@@ -29,6 +29,7 @@ import com.google.devtools.depan.platform.eclipse.ui.widgets.Widgets;
 import com.google.devtools.depan.resources.PropertyDocumentReference;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -76,6 +77,21 @@ public class GraphEditor extends MultiPageEditorPart {
 
   // TODO(leeca): Figure out how to turn this back on
   // private Binop<GraphModel> binop = null;
+
+  /////////////////////////////////////
+  // Basic Getters and Setters
+
+  /**
+   * Provide the project to use for saving resource associated with this
+   * instance.  Under normal circumstances, it's the same project that contains
+   * the underlying view document.
+   */
+  public IProject getResourceProject() {
+    if (null != file) {
+      return file.getProject();
+    }
+    return null;
+  }
 
   /////////////////////////////////////
   // Public methods
@@ -206,6 +222,36 @@ public class GraphEditor extends MultiPageEditorPart {
 
     int index = addPage(composite);
     setPageText(index, "Opened related Views");
+  }
+
+  /////////////////////////////////////
+  // UX Handler
+
+  public void handleSelectNone() {
+    checkNodeTreeView.handleSelectNone();
+  }
+
+  public boolean getRecursiveSelect() {
+    return checkNodeTreeView.getRecursive();
+  }
+
+  public void handleSelectRecursive() {
+    boolean state =  checkNodeTreeView.getRecursive();
+
+    checkNodeTreeView.setRecursive(!state);
+  }
+
+  public void handleHierarchyFrom() {
+    checkNodeTreeView.handleHierarchyFrom(
+        getEditorSite().getShell(), getResourceProject());
+  }
+
+  public void handleCollapseAll() {
+    checkNodeTreeView.handleCollapseAll();
+  }
+
+  public void handleExpandAll() {
+    checkNodeTreeView.handleExpandAll();
   }
 
   /////////////////////////////////////

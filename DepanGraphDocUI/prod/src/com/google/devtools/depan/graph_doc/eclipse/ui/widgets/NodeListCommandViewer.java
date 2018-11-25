@@ -19,11 +19,11 @@ package com.google.devtools.depan.graph_doc.eclipse.ui.widgets;
 import com.google.devtools.depan.eclipse.ui.nodes.cache.HierarchyCache;
 import com.google.devtools.depan.eclipse.ui.nodes.trees.GraphData;
 import com.google.devtools.depan.eclipse.ui.nodes.viewers.CheckNodeTreeView;
-import com.google.devtools.depan.eclipse.ui.nodes.viewers.HierarchyViewer;
-import com.google.devtools.depan.eclipse.ui.nodes.viewers.HierarchyViewer.HierarchyChangeListener;
+import com.google.devtools.depan.graph.api.EdgeMatcher;
 import com.google.devtools.depan.graph_doc.GraphDocLogger;
 import com.google.devtools.depan.graph_doc.eclipse.ui.editor.GraphEditorNodeViewProvider;
 import com.google.devtools.depan.graph_doc.eclipse.ui.plugins.FromGraphDocContributor;
+import com.google.devtools.depan.matchers.eclipse.ui.widgets.EdgeMatcherSaveLoadConfig;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptor;
 import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.platform.eclipse.ui.widgets.Widgets;
@@ -35,6 +35,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 
 import java.util.Collection;
 
@@ -50,11 +52,9 @@ public class NodeListCommandViewer extends CheckNodeTreeView {
   /////////////////////////////////////
   // UX Elements
 
-  private HierarchyViewer<GraphNode> hierarchyView;
-
-  private Button recursiveSelect;
-
   private FromGraphDocListControl fromGraphDoc;
+
+  private Label nameViewer;
 
   /////////////////////////////////////
   // Public methods
@@ -71,20 +71,8 @@ public class NodeListCommandViewer extends CheckNodeTreeView {
     Composite result = Widgets.buildGridContainer(parent, 4);
 
     @SuppressWarnings("unused")
-    Control label = Widgets.buildCompactLabel(result, "Hierarchy from");
-
-    hierarchyView = setupHierarchyView(result);
-    hierarchyView.setLayoutData(Widgets.buildHorzFillData());
-
-    // recursive select options
-    recursiveSelect =
-        Widgets.buildCompactCheckButton(result, "Recursive select in tree");
-    recursiveSelect.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        setRecursiveSelect(recursiveSelect.getSelection());
-      }
-    });
+    Control label = Widgets.buildCompactLabel(result, "Hierarchy from: ");
+    nameViewer = Widgets.buildGridLabel(result, "");
 
     Composite newView = setupNewView(result);
     newView.setLayoutData(Widgets.buildTrailFillData());
@@ -92,33 +80,29 @@ public class NodeListCommandViewer extends CheckNodeTreeView {
     return result;
   }
 
-  @Override
-  public void setRecursive(boolean recursive) {
-    recursiveSelect.setSelection(recursive);
-    super.setRecursive(recursive);
-  }
-
   public void setHierachyInput(
       PropertyDocumentReference<GraphEdgeMatcherDescriptor> selectedRelSet,
       IProject project) {
-    hierarchyView.setInput(hierarchies, selectedRelSet, project);
-    handleHierarchyChanged();
+    EdgeMatcher<String> matcher = selectedRelSet.getDocument().getInfo();
+    GraphData<GraphNode> graphData = hierarchies.getHierarchy(matcher);
+    GraphEditorNodeViewProvider<GraphNode> provider =
+        new GraphEditorNodeViewProvider<GraphNode>(graphData);
+    setNvProvider(provider);
+    refresh();
+
+    nameViewer.setText(selectedRelSet.getDocument().getName());
+  }
+
+  public void handleHierarchyFrom(Shell shell, IProject proj) {
+    PropertyDocumentReference<GraphEdgeMatcherDescriptor> rsrc =
+        EdgeMatcherSaveLoadConfig.CONFIG.loadResource(shell, proj);
+    if (null != rsrc) {
+      setHierachyInput(rsrc, proj);
+    }
   }
 
   /////////////////////////////////////
   // UX Setup
-
-  private HierarchyViewer<GraphNode> setupHierarchyView(Composite parent) {
-    HierarchyViewer<GraphNode> result = new HierarchyViewer<GraphNode>(parent);
-
-    result.addChangeListener(new HierarchyChangeListener() {
-        @Override
-        public void hierarchyChanged() {
-          handleHierarchyChanged(); 
-        }
-      });
-    return result;
-  }
 
   private Composite setupNewView(Composite parent) {
     Composite result = Widgets.buildGridContainer(parent, 2);
@@ -134,29 +118,6 @@ public class NodeListCommandViewer extends CheckNodeTreeView {
     fromGraphDoc = new FromGraphDocListControl(result);
     fromGraphDoc.setLayoutData(Widgets.buildHorzFillData());
     return result;
-  }
-
-  /////////////////////////////////////
-  // UX Actions
-
-  private void setRecursiveSelect(boolean state) {
-    setRecursive(state);
-  }
-
-  private void handleHierarchyChanged() {
-    if (null == hierarchyView) {
-      return;
-    }
-
-    GraphDocLogger.LOG.info("Initialize graph...");
-    GraphData<GraphNode> graphData = hierarchyView.getGraphData();
-
-    GraphEditorNodeViewProvider<GraphNode> provider =
-        new GraphEditorNodeViewProvider<GraphNode>(graphData);
-    setNvProvider(provider);
-    refresh();
-
-    GraphDocLogger.LOG.info("  DONE");
   }
 
   /////////////////////////////////////
