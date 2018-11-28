@@ -16,7 +16,9 @@
 
 package com.google.devtools.depan.graph_doc.eclipse.ui.editor;
 
+import com.google.devtools.depan.eclipse.ui.nodes.trees.NodeWrapper;
 import com.google.devtools.depan.graph_doc.GraphDocLogger;
+import com.google.devtools.depan.graph_doc.eclipse.ui.plugins.FromGraphDocWizard;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResourceBuilder;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResources;
 import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.NodeListCommandInfo;
@@ -25,12 +27,14 @@ import com.google.devtools.depan.graph_doc.model.DependencyModel;
 import com.google.devtools.depan.graph_doc.model.GraphDocument;
 import com.google.devtools.depan.graph_doc.persistence.ResourceCache;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptor;
+import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.platform.eclipse.ui.widgets.Widgets;
 import com.google.devtools.depan.resources.PropertyDocumentReference;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -45,6 +49,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
+
+import java.util.Collection;
 
 /**
  * Show the entire set of nodes from an analysis tree.  Allow the user
@@ -252,6 +258,20 @@ public class GraphEditor extends MultiPageEditorPart {
 
   public void handleExpandAll() {
     checkNodeTreeView.handleExpandAll();
+  }
+
+  public Collection<GraphNode> getSelectedNodes() {
+    return checkNodeTreeView.getSelectedNodes();
+  }
+
+  public void runFromGraphDocWizard(
+      FromGraphDocWizard wizard, GraphNode topNode, Collection<GraphNode> nodes) {
+    String name = FromGraphDocWizard.calcDetailName(topNode);
+    wizard.init(file, graph, graphResources, nodes, name);
+
+    // Run the wizard.
+    WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
+    dialog.open();
   }
 
   /////////////////////////////////////

@@ -76,6 +76,14 @@
                   </reference>
                </visibleWhen>
             </dynamic>
+            <separator
+                  name="com.google.devtools.depan.graph_doc.eclipse.ui.edit.separator1"
+                  visible="true">
+            </separator>
+            <dynamic
+                  class="com.google.devtools.depan.graph_doc.eclipse.ui.widgets.NewFromGraphDocMenu"
+                  id="com.google.devtools.depan.graph_doc.eclipse.ui.document.NewFromGraphDoc">
+            </dynamic>
          </menu>
          <menu
                id="eclipse.ui.main.menu.View"
