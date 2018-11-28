@@ -16,16 +16,20 @@
 
 package com.google.devtools.depan.graph_doc.eclipse.ui.editor;
 
-import com.google.devtools.depan.eclipse.ui.nodes.trees.NodeWrapper;
+import com.google.devtools.depan.eclipse.ui.nodes.cache.HierarchyCache;
+import com.google.devtools.depan.eclipse.ui.nodes.trees.GraphData;
+import com.google.devtools.depan.eclipse.ui.nodes.viewers.CheckNodeTreeView;
+import com.google.devtools.depan.eclipse.ui.nodes.viewers.NodeTreeProviders;
+import com.google.devtools.depan.graph.api.EdgeMatcher;
 import com.google.devtools.depan.graph_doc.GraphDocLogger;
 import com.google.devtools.depan.graph_doc.eclipse.ui.plugins.FromGraphDocWizard;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResourceBuilder;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResources;
-import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.NodeListCommandInfo;
-import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.NodeListCommandViewer;
+import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.GraphViewInfoPanel;
 import com.google.devtools.depan.graph_doc.model.DependencyModel;
 import com.google.devtools.depan.graph_doc.model.GraphDocument;
 import com.google.devtools.depan.graph_doc.persistence.ResourceCache;
+import com.google.devtools.depan.matchers.eclipse.ui.widgets.EdgeMatcherSaveLoadConfig;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptor;
 import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.platform.eclipse.ui.widgets.Widgets;
@@ -77,9 +81,15 @@ public class GraphEditor extends MultiPageEditorPart {
   private List associatedViews = null;
 
   /////////////////////////////////////
+
+  private HierarchyCache<GraphNode> hierarchies = null;
+
+  /////////////////////////////////////
   // UX Elements
 
-  private NodeListCommandViewer checkNodeTreeView = null;
+  private CheckNodeTreeView checkNodeTreeView = null;
+
+  private GraphViewInfoPanel infoPanel = null;
 
   // TODO(leeca): Figure out how to turn this back on
   // private Binop<GraphModel> binop = null;
@@ -145,6 +155,8 @@ public class GraphEditor extends MultiPageEditorPart {
 
     DependencyModel model = graph.getDependencyModel();
     graphResources = GraphResourceBuilder.forModel(model);
+    hierarchies = new HierarchyCache<GraphNode>(
+        NodeTreeProviders.GRAPH_NODE_PROVIDER, graph.getGraph());
 
     // set the title to the filename, excepted the file extension
     String title = file.getName();
@@ -165,25 +177,17 @@ public class GraphEditor extends MultiPageEditorPart {
   private void createPage0(Composite parent) {
     Composite composite = Widgets.buildGridContainer(parent, 1);
 
-    checkNodeTreeView = setupTree(composite);
+    infoPanel = new GraphViewInfoPanel(composite);
+    infoPanel.setLayoutData(Widgets.buildHorzFillData());
+
+    checkNodeTreeView = new CheckNodeTreeView(composite);
     checkNodeTreeView.setLayoutData(Widgets.buildGrabFillData());
+    checkNodeTreeView.setRecursive(RECURSIVE_SELECT_DEFAULT);
+
+    setHierachyInput(graphResources.getDefaultEdgeMatcher().getDocument());
 
     int index = addPage(composite);
     setPageText(index, "New View");
-  }
-
-  private NodeListCommandViewer setupTree(Composite parent) {
-    PropertyDocumentReference<GraphEdgeMatcherDescriptor> defMatcher =
-        graphResources.getDefaultEdgeMatcher();
-    Shell shell = getSite().getWorkbenchWindow().getShell();
-
-    NodeListCommandInfo runner = new NodeListCommandInfo(
-        file, graph, graphResources, shell);
-
-    NodeListCommandViewer result = new NodeListCommandViewer(parent, runner);
-    result.setHierachyInput(defMatcher, file.getProject());
-    result.setRecursive(RECURSIVE_SELECT_DEFAULT);
-    return result;
   }
 
   private void createPage1(Composite parent) {
@@ -248,8 +252,12 @@ public class GraphEditor extends MultiPageEditorPart {
   }
 
   public void handleHierarchyFrom() {
-    checkNodeTreeView.handleHierarchyFrom(
-        getEditorSite().getShell(), getResourceProject());
+    Shell shell = getEditorSite().getShell();
+    PropertyDocumentReference<GraphEdgeMatcherDescriptor> rsrc =
+        EdgeMatcherSaveLoadConfig.CONFIG.loadResource(shell, getResourceProject());
+    if (null != rsrc) {
+      setHierachyInput(rsrc.getDocument());
+    }
   }
 
   public void handleCollapseAll() {
@@ -272,6 +280,16 @@ public class GraphEditor extends MultiPageEditorPart {
     // Run the wizard.
     WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
     dialog.open();
+  }
+
+  public void setHierachyInput(GraphEdgeMatcherDescriptor document) {
+    EdgeMatcher<String> matcher = document.getInfo();
+    GraphData<GraphNode> graphData = hierarchies.getHierarchy(matcher);
+    GraphEditorNodeViewProvider<GraphNode> provider =
+        new GraphEditorNodeViewProvider<GraphNode>(graphData);
+    String matcherName = document.getName();
+    checkNodeTreeView.setNodeViewProvider(provider);
+    infoPanel.setMatcherName(matcherName);
   }
 
   /////////////////////////////////////

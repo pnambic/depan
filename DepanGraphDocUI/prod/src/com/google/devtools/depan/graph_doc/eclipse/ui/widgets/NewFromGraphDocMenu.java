@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 The Depan Project Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.devtools.depan.graph_doc.eclipse.ui.widgets;
 
 import com.google.devtools.depan.graph_doc.eclipse.ui.editor.GraphEditor;
@@ -53,13 +69,13 @@ public class NewFromGraphDocMenu extends ContributionItem
 
     Collection<GraphNode> nodes = editor.getSelectedNodes();
     GraphNode topNode = nodes.isEmpty() ? null : nodes.iterator().next();
-    WizardDispatch selectHandler = new WizardDispatch(editor, topNode, nodes);
+    WizardContext context = new WizardContext(editor, topNode, nodes);
 
     Menu newMenu = new Menu(newItem);
     for (Entry<String, FromGraphDocContributor> entry
         : FromGraphDocRegistry.getRegistryContributionMap().entrySet()) {
 
-      fillContribItem(newMenu, entry.getValue(), selectHandler);
+      fillContribItem(newMenu, entry.getValue(), context);
     }
 
     newItem.setMenu(newMenu);
@@ -67,7 +83,7 @@ public class NewFromGraphDocMenu extends ContributionItem
   }
 
   private void fillContribItem(Menu parent,
-      final FromGraphDocContributor contrib, final WizardDispatch dispatch) {
+      final FromGraphDocContributor contrib, final WizardContext context) {
  
     MenuItem item = new MenuItem(parent, SWT.NONE);
     item.setText(contrib.getLabel());
@@ -77,17 +93,17 @@ public class NewFromGraphDocMenu extends ContributionItem
       @Override
       public void widgetSelected(SelectionEvent e) {
         FromGraphDocWizard wizard = contrib.newWizard();
-        dispatch.dispatch(wizard);
+        context.dispatch(wizard);
       }
     });
   }
 
-  private static class WizardDispatch extends SelectionAdapter {
+  private static class WizardContext extends SelectionAdapter {
     final GraphEditor editor;
     final GraphNode topNode;
     final Collection<GraphNode> nodes;
 
-    public WizardDispatch(GraphEditor editor,
+    public WizardContext(GraphEditor editor,
         GraphNode topNode, Collection<GraphNode> nodes) {
       this.editor = editor;
       this.topNode = topNode;

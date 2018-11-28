@@ -97,6 +97,8 @@ public class NodeFilterViewPart extends AbstractViewDocViewPart {
 
   private FilterTableEditorControl filterControl;
 
+  private ControlInfoPanel infoPanel;
+
   /////////////////////////////////////
   //
 
@@ -194,7 +196,10 @@ public class NodeFilterViewPart extends AbstractViewDocViewPart {
   private Composite setupResultNodes(Composite parent) {
     Group result = Widgets.buildGridGroup(parent, "Result nodes", 1);
 
-    results = new ControlGraphNodeViewer(result);
+    infoPanel = new ControlInfoPanel(result);
+    infoPanel.setLayoutData(Widgets.buildHorzFillData());
+
+    results = new GraphNodeViewer(result);
     results.setLayoutData(Widgets.buildGrabFillData());
 
     Composite newView = setupResolution(result);
@@ -226,17 +231,13 @@ public class NodeFilterViewPart extends AbstractViewDocViewPart {
     return result;
   }
 
-  private class ControlGraphNodeViewer extends GraphNodeViewer {
+  private class ControlInfoPanel extends Composite {
 
-    public ControlGraphNodeViewer(Composite parent) {
-      super(parent);
-    }
-
-    @Override
-    protected Composite createCommands(Composite parent) {
-      Composite result = Widgets.buildGridContainer(parent, 1);
+    public ControlInfoPanel(Composite parent) {
+      super(parent, SWT.NONE);
+      setLayout(Widgets.buildContainerLayout(1));
       Button compute = Widgets.buildCompactPushButton(
-          result, "Compute Results");
+          this, "Compute Results");
 
       compute.addSelectionListener(new SelectionAdapter() {
 
@@ -245,8 +246,6 @@ public class NodeFilterViewPart extends AbstractViewDocViewPart {
           updateResults();
         }
       });
-
-      return result;
     }
   }
 

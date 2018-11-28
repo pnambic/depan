@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
@@ -58,32 +57,8 @@ public class GraphNodeViewer extends Composite {
     super(parent, SWT.NONE);
     setLayout(Widgets.buildContainerLayout(1));
 
-    Composite optionsSection = setupOptions(this);
-    optionsSection.setLayoutData(Widgets.buildHorzFillData());
-
     treeViewer = createTreeViewer(this);
     treeViewer.getTree().setLayoutData(Widgets.buildGrabFillData());
-  }
-
-  private Composite setupOptions(Composite parent) {
-    Composite result = new Composite(parent, SWT.NONE);
-    GridLayout layout = Widgets.buildContainerLayout(1);
-
-    Composite leftCmds = createCommands(result);
-    if (null != leftCmds) {
-      leftCmds.setLayoutData(Widgets.buildHorzFillData());
-      layout.numColumns = 2;
-    }
-    result.setLayout(layout);
-
-    return result;
-  }
-
-  /**
-   * Hook method for derived types to add left-side commands.
-   */
-  protected Composite createCommands(Composite result) {
-    return null;
   }
 
   public void setNvProvider(NodeViewerProvider nvProvider) {
@@ -99,6 +74,11 @@ public class GraphNodeViewer extends Composite {
     treeViewer.setInput(treeRoots);
     provider.updateExpandState(treeViewer);
     treeViewer.refresh();
+  }
+
+  public void setNodeViewProvider(NodeViewerProvider provider) {
+    setNvProvider(provider);
+    refresh();
   }
 
   public void handleSelectNone() {

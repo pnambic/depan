@@ -16,14 +16,18 @@
 
 package com.google.devtools.depan.nodelist_doc.eclipse.ui.editor;
 
+import com.google.devtools.depan.eclipse.ui.nodes.cache.HierarchyCache;
+import com.google.devtools.depan.eclipse.ui.nodes.trees.GraphData;
 import com.google.devtools.depan.eclipse.ui.nodes.viewers.CheckNodeTreeView;
+import com.google.devtools.depan.eclipse.ui.nodes.viewers.NodeTreeProviders;
+import com.google.devtools.depan.graph.api.EdgeMatcher;
 import com.google.devtools.depan.graph_doc.GraphDocLogger;
+import com.google.devtools.depan.graph_doc.eclipse.ui.editor.GraphEditorNodeViewProvider;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResourceBuilder;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResources;
-import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.NodeListCommandInfo;
-import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.NodeListCommandViewer;
-import com.google.devtools.depan.graph_doc.model.GraphDocument;
+import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.GraphViewInfoPanel;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptor;
+import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.nodelist_doc.model.NodeListDocument;
 import com.google.devtools.depan.nodelist_doc.persistence.NodeListDocXmlPersist;
 import com.google.devtools.depan.platform.PlatformTools;
@@ -38,7 +42,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -79,9 +82,15 @@ public class NodeListEditor extends EditorPart {
   private boolean needsSave;
 
   /////////////////////////////////////
+
+  private HierarchyCache<GraphNode> hierarchies;
+
+  /////////////////////////////////////
   // UX Elements
 
   private CheckNodeTreeView checkNodeTreeView;
+
+  private GraphViewInfoPanel infoPanel;
 
   /////////////////////////////////////
   // Public methods
@@ -184,6 +193,9 @@ public class NodeListEditor extends EditorPart {
       throw new PartInitException(
           "Input is not suitable for the NodeList editor.");
     }
+
+    hierarchies = new HierarchyCache<GraphNode>(
+        NodeTreeProviders.GRAPH_NODE_PROVIDER, nodeListInfo.getGraphModel());
   }
 
   private IFile getSaveAsFile() {
@@ -254,27 +266,29 @@ public class NodeListEditor extends EditorPart {
   private void createPage(Composite parent) {
     Composite result = Widgets.buildGridContainer(parent, 1);
 
-    checkNodeTreeView = setupTree(result);
-    checkNodeTreeView.setLayoutData(Widgets.buildGrabFillData());
-  }
+    infoPanel = new GraphViewInfoPanel(result);
+    infoPanel.setLayoutData(Widgets.buildHorzFillData());
 
-  private NodeListCommandViewer setupTree(Composite parent) {
+    checkNodeTreeView = new CheckNodeTreeView(result);
+    checkNodeTreeView.setLayoutData(Widgets.buildGrabFillData());
+    checkNodeTreeView.setRecursive(RECURSIVE_SELECT_DEFAULT);
+
     GraphResources graphResources =
         GraphResourceBuilder.forModel(nodeListInfo.getDependencyModel());
 
     PropertyDocumentReference<GraphEdgeMatcherDescriptor> defMatcher =
         graphResources.getDefaultEdgeMatcher();
 
-    GraphDocument graphDoc = nodeListInfo.getGraphDocument();
-    Shell shell = getSite().getWorkbenchWindow().getShell();
+    setHierachyInput(defMatcher.getDocument());
+  }
 
-    NodeListCommandInfo runner = new NodeListCommandInfo(
-        file, graphDoc, graphResources, shell);
-
-    NodeListCommandViewer result = new NodeListCommandViewer(parent, runner);
-    result.setHierachyInput(defMatcher, getProject());
-    result.setRecursive(RECURSIVE_SELECT_DEFAULT);
-    return result;
+  public void setHierachyInput(GraphEdgeMatcherDescriptor document) {
+    EdgeMatcher<String> matcher = document.getInfo();
+    GraphData<GraphNode> graphData = hierarchies.getHierarchy(matcher);
+    GraphEditorNodeViewProvider<GraphNode> provider =
+        new GraphEditorNodeViewProvider<GraphNode>(graphData);
+    checkNodeTreeView.setNodeViewProvider(provider);
+    infoPanel.setMatcherName(document.getName());
   }
 
   /////////////////////////////////////
