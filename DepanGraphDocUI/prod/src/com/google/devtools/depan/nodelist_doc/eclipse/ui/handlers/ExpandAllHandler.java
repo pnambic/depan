@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.devtools.depan.graph_doc.eclipse.ui.handlers;
+package com.google.devtools.depan.nodelist_doc.eclipse.ui.handlers;
 
-import com.google.devtools.depan.graph_doc.eclipse.ui.editor.GraphEditor;
+import com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.NodeListEditor;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-public class HierarchyFromHandler extends AbstractGraphEditorHandler {
+public class ExpandAllHandler extends AbstractNodeListEditorHandler {
 
   @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
-    GraphEditor editor = getGraphEditor(event);
-    editor.handleHierarchyFrom();
-
+    NodeListEditor editor = getNodeListEditor(event);
+    editor.handleExpandAll();
     return null;
   }
 }

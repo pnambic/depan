@@ -26,12 +26,15 @@ import com.google.common.collect.Sets;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -42,6 +45,8 @@ public class CheckNodeTreeView extends GraphNodeViewer {
   private CheckboxTreeViewer tree;
 
   private boolean recursiveTreeSelect;
+
+  private ControlCheckStateProvider checkedProvider;
 
   public CheckNodeTreeView(Composite parent) {
     super(parent);
@@ -55,6 +60,9 @@ public class CheckNodeTreeView extends GraphNodeViewer {
     result.setLabelProvider(new WorkbenchLabelProvider());
     result.setContentProvider(new BaseWorkbenchContentProvider());
     result.setComparator(new NodeWrapperTreeSorter());
+
+     checkedProvider = new ControlCheckStateProvider();
+     result.setCheckStateProvider(checkedProvider);
 
     result.addCheckStateListener(new ICheckStateListener() {
       @Override
@@ -107,5 +115,57 @@ public class CheckNodeTreeView extends GraphNodeViewer {
 
   private Object[] getCheckedElements() {
     return tree.getCheckedElements();
+  }
+
+  public void addCheckedNodes(Collection<GraphNode> additions) {
+    checkedProvider.addNodes(additions);
+  }
+
+  public Collection<GraphNode> getCheckedNodes() {
+    return checkedProvider.getCheckedNodes();
+  }
+
+  public static class ControlCheckStateProvider implements ICheckStateProvider {
+
+    private final Collection<GraphNode> checkedNodes = new HashSet<GraphNode>();
+
+    public ControlCheckStateProvider(Collection<GraphNode> initialChecks) {
+      checkedNodes.addAll(initialChecks);
+    }
+
+    public Collection<GraphNode> getCheckedNodes() {
+      return new ArrayList<GraphNode>(checkedNodes);
+    }
+
+    public ControlCheckStateProvider() {
+      // TODO Auto-generated constructor stub
+    }
+
+    @Override
+    public boolean isChecked(Object item) {
+      if (item instanceof NodeWrapper) {
+        GraphNode node = ((NodeWrapper<?>) item).getNode();
+        return checkedNodes.contains(node);
+      }
+
+      return false;
+    }
+
+    @Override
+    public boolean isGrayed(Object element) {
+      return false;
+    }
+
+    public void addNode(GraphNode addition) {
+      checkedNodes.add(addition);
+    }
+
+    public void addNodes(Collection<GraphNode> additions) {
+      checkedNodes.addAll(additions);
+    }
+
+    public void removeNode(GraphNode subtrahend) {
+      checkedNodes.remove(subtrahend);
+    }
   }
 }

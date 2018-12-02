@@ -23,9 +23,11 @@ import com.google.devtools.depan.eclipse.ui.nodes.viewers.NodeTreeProviders;
 import com.google.devtools.depan.graph.api.EdgeMatcher;
 import com.google.devtools.depan.graph_doc.GraphDocLogger;
 import com.google.devtools.depan.graph_doc.eclipse.ui.editor.GraphEditorNodeViewProvider;
+import com.google.devtools.depan.graph_doc.eclipse.ui.plugins.FromGraphDocWizard;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResourceBuilder;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResources;
 import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.GraphViewInfoPanel;
+import com.google.devtools.depan.matchers.eclipse.ui.widgets.EdgeMatcherSaveLoadConfig;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptor;
 import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.nodelist_doc.model.NodeListDocument;
@@ -41,7 +43,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -52,6 +56,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+
+import java.util.Collection;
 
 /**
  * Show the subset of nodes in a NodeList.  Allow the user
@@ -91,6 +97,8 @@ public class NodeListEditor extends EditorPart {
   private CheckNodeTreeView checkNodeTreeView;
 
   private GraphViewInfoPanel infoPanel;
+
+  private GraphResources graphResources;
 
   /////////////////////////////////////
   // Public methods
@@ -194,6 +202,8 @@ public class NodeListEditor extends EditorPart {
           "Input is not suitable for the NodeList editor.");
     }
 
+    graphResources = GraphResourceBuilder.forModel(nodeListInfo.getDependencyModel());
+
     hierarchies = new HierarchyCache<GraphNode>(
         NodeTreeProviders.GRAPH_NODE_PROVIDER, nodeListInfo.getGraphModel());
   }
@@ -272,14 +282,9 @@ public class NodeListEditor extends EditorPart {
     checkNodeTreeView = new CheckNodeTreeView(result);
     checkNodeTreeView.setLayoutData(Widgets.buildGrabFillData());
     checkNodeTreeView.setRecursive(RECURSIVE_SELECT_DEFAULT);
+    checkNodeTreeView.addCheckedNodes(nodeListInfo.getNodes());
 
-    GraphResources graphResources =
-        GraphResourceBuilder.forModel(nodeListInfo.getDependencyModel());
-
-    PropertyDocumentReference<GraphEdgeMatcherDescriptor> defMatcher =
-        graphResources.getDefaultEdgeMatcher();
-
-    setHierachyInput(defMatcher.getDocument());
+    setHierachyInput(graphResources.getDefaultEdgeMatcher().getDocument());
   }
 
   public void setHierachyInput(GraphEdgeMatcherDescriptor document) {
@@ -292,9 +297,57 @@ public class NodeListEditor extends EditorPart {
   }
 
   /////////////////////////////////////
+  // UX Handler
+
+  public void handleSelectNone() {
+    checkNodeTreeView.handleSelectNone();
+  }
+
+  public boolean getRecursiveSelect() {
+    return checkNodeTreeView.getRecursive();
+  }
+
+  public void handleSelectRecursive() {
+    boolean state =  checkNodeTreeView.getRecursive();
+
+    checkNodeTreeView.setRecursive(!state);
+  }
+
+  public void handleHierarchyFrom() {
+    Shell shell = getEditorSite().getShell();
+    PropertyDocumentReference<GraphEdgeMatcherDescriptor> rsrc =
+        EdgeMatcherSaveLoadConfig.CONFIG.loadResource(shell, getResourceProject());
+    if (null != rsrc) {
+      setHierachyInput(rsrc.getDocument());
+    }
+  }
+
+  public void handleCollapseAll() {
+    checkNodeTreeView.handleCollapseAll();
+  }
+
+  public void handleExpandAll() {
+    checkNodeTreeView.handleExpandAll();
+  }
+
+  public Collection<GraphNode> getSelectedNodes() {
+    return checkNodeTreeView.getSelectedNodes();
+  }
+
+  public void runFromGraphDocWizard(
+      FromGraphDocWizard wizard, GraphNode topNode, Collection<GraphNode> nodes) {
+    String name = FromGraphDocWizard.calcDetailName(topNode);
+    wizard.init(file, nodeListInfo.getGraphDocument(), graphResources, nodes, name);
+
+    // Run the wizard.
+    WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
+    dialog.open();
+  }
+
+  /////////////////////////////////////
   // Support methods
 
-  private IProject getProject() {
+  private IProject getResourceProject() {
     if (null != file) {
       return file.getProject();
     }

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.google.devtools.depan.graph_doc.eclipse.ui.handlers;
+package com.google.devtools.depan.nodelist_doc.eclipse.ui.handlers;
 
-import com.google.devtools.depan.graph_doc.eclipse.ui.editor.GraphEditor;
+import com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.NodeListEditor;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -30,14 +30,14 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * 
  * @author <a href="leeca@pnambic.com">Lee Carver</a>
  */
-public abstract class AbstractGraphEditorHandler extends AbstractHandler {
+public abstract class AbstractNodeListEditorHandler extends AbstractHandler {
 
   private boolean isEnabled = false;
 
-  protected GraphEditor getGraphEditor(ExecutionEvent event) {
+  protected NodeListEditor getNodeListEditor(ExecutionEvent event) {
     IEditorPart editor = HandlerUtil.getActiveEditor(event);
-    if (editor instanceof GraphEditor) {
-      return (GraphEditor) editor;
+    if (editor instanceof NodeListEditor) {
+      return (NodeListEditor) editor;
     }
     return null;
   }
@@ -56,7 +56,7 @@ public abstract class AbstractGraphEditorHandler extends AbstractHandler {
 
     IEvaluationContext context = (IEvaluationContext) evalContext;
     Object editor = context.getVariable(ISources.ACTIVE_EDITOR_NAME);
-    if (editor instanceof GraphEditor) {
+    if (editor instanceof NodeListEditor) {
       isEnabled = true;
       return;
     }

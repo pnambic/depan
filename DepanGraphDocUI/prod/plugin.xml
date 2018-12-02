@@ -130,6 +130,89 @@
             </command>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="eclipse.ui.main.menu.Edit"
+               label="Edit">
+            <command
+                  commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.SelectNone"
+                  id="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.SelectNone"
+                  label="Select None"
+                  style="push"
+                  tooltip="Deselect all nodes">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.isNodeListEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <dynamic
+                  class="com.google.devtools.depan.nodelist_doc.eclipse.ui.widgets.SelectRecursiveMenu"
+                  id="com.google.devtools.depan.nodelist_doc.eclipse.ui.document.SelectRecursive">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.isNodeListEditorActive">
+                  </reference>
+               </visibleWhen>
+            </dynamic>
+            <separator
+                  name="com.google.devtools.depan.nodelist_doc.eclipse.ui.edit.separator1"
+                  visible="true">
+            </separator>
+            <dynamic
+                  class="com.google.devtools.depan.nodelist_doc.eclipse.ui.widgets.NewFromNodelistMenu"
+                  id="com.google.devtools.depan.nodelist_doc.eclipse.ui.document.NewFromGraphDoc">
+            </dynamic>
+         </menu>
+         <menu
+               id="eclipse.ui.main.menu.View"
+               label="View">
+            <command
+                  commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.HierarchyFrom"
+                  id="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.HierarchyFrom"
+                  label="Hierarchy From..."
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.isNodeListEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.separator1"
+                  visible="true">
+            </separator>
+            <command
+                  commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.CollapseAll"
+                  id="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.CollapseAll"
+                  label="Collapse All"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.isNodeListEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.ExpandAll"
+                  id="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.ExpandAll"
+                  label="Expand All"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.isNodeListEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.core.expressions.definitions">
@@ -139,6 +222,15 @@
                variable="activeEditorId">
             <equals
                   value="com.google.devtools.depan.graph_doc.eclipse.ui.editor.GraphEditor">
+            </equals>
+         </with>
+      </definition>
+      <definition
+            id="com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.isNodeListEditorActive">
+         <with
+               variable="activeEditorId">
+            <equals
+                  value="com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.NodeListEditor">
             </equals>
          </with>
       </definition>
@@ -165,6 +257,26 @@
             id="com.google.devtools.depan.graph_doc.eclipse.ui.command.SelectNone"
             name="Select None">
       </command>
+      <command
+            description="Collapse All"
+            id="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.CollapseAll"
+            name="Collapse All">
+      </command>
+      <command
+            description="Expand All"
+            id="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.ExpandAll"
+            name="Expand All">
+      </command>
+      <command
+            description="Hierarchy From"
+            id="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.HierarchyFrom"
+            name="Hierarchy From">
+      </command>
+      <command
+            description="Select None"
+            id="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.SelectNone"
+            name="Select None">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -183,6 +295,22 @@
       <handler
             class="com.google.devtools.depan.graph_doc.eclipse.ui.handlers.SelectNoneHandler"
             commandId="com.google.devtools.depan.graph_doc.eclipse.ui.command.SelectNone">
+      </handler>
+      <handler
+            class="com.google.devtools.depan.nodelist_doc.eclipse.ui.handlers.CollapseAllHandler"
+            commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.CollapseAll">
+      </handler>
+      <handler
+            class="com.google.devtools.depan.nodelist_doc.eclipse.ui.handlers.ExpandAllHandler"
+            commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.ExpandAll">
+      </handler>
+      <handler
+            class="com.google.devtools.depan.nodelist_doc.eclipse.ui.handlers.HierarchyFromHandler"
+            commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.view.HierarchyFrom">
+      </handler>
+      <handler
+            class="com.google.devtools.depan.nodelist_doc.eclipse.ui.handlers.SelectNoneHandler"
+            commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.SelectNone">
       </handler>
    </extension>
 

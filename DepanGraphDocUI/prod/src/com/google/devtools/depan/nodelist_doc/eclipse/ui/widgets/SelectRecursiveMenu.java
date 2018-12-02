@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.devtools.depan.graph_doc.eclipse.ui.widgets;
+package com.google.devtools.depan.nodelist_doc.eclipse.ui.widgets;
 
-import com.google.devtools.depan.graph_doc.eclipse.ui.editor.GraphEditor;
+import com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.NodeListEditor;
 
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.swt.SWT;
@@ -48,9 +48,9 @@ public class SelectRecursiveMenu extends ContributionItem
   public void fill(Menu menu, int index) {
     IEditorPart editor = getEditor();
 
-    if (editor instanceof GraphEditor) {
-      final GraphEditor graphEditor = (GraphEditor) editor;
-      boolean recursiveSelect = graphEditor.getRecursiveSelect();
+    if (editor instanceof NodeListEditor) {
+      final NodeListEditor nodeListEditor = (NodeListEditor) editor;
+      boolean recursiveSelect = nodeListEditor.getRecursiveSelect();
       MenuItem item = new MenuItem(menu, SWT.CHECK);
       item.setText("Select Recursive");
       item.setEnabled(true);
@@ -59,7 +59,7 @@ public class SelectRecursiveMenu extends ContributionItem
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-          graphEditor.handleSelectRecursive();
+          nodeListEditor.handleSelectRecursive();
         }
       });
       return;

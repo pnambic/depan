@@ -272,16 +272,6 @@ public class GraphEditor extends MultiPageEditorPart {
     return checkNodeTreeView.getSelectedNodes();
   }
 
-  public void runFromGraphDocWizard(
-      FromGraphDocWizard wizard, GraphNode topNode, Collection<GraphNode> nodes) {
-    String name = FromGraphDocWizard.calcDetailName(topNode);
-    wizard.init(file, graph, graphResources, nodes, name);
-
-    // Run the wizard.
-    WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
-    dialog.open();
-  }
-
   public void setHierachyInput(GraphEdgeMatcherDescriptor document) {
     EdgeMatcher<String> matcher = document.getInfo();
     GraphData<GraphNode> graphData = hierarchies.getHierarchy(matcher);
@@ -290,6 +280,16 @@ public class GraphEditor extends MultiPageEditorPart {
     String matcherName = document.getName();
     checkNodeTreeView.setNodeViewProvider(provider);
     infoPanel.setMatcherName(matcherName);
+  }
+
+  public void runFromGraphDocWizard(
+      FromGraphDocWizard wizard, GraphNode topNode, Collection<GraphNode> nodes) {
+    String name = FromGraphDocWizard.calcDetailName(topNode);
+    wizard.init(file, graph, graphResources, nodes, name);
+
+    // Run the wizard.
+    WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
+    dialog.open();
   }
 
   /////////////////////////////////////
