@@ -18,7 +18,6 @@ package com.google.devtools.depan.eclipse.ui.nodes.viewers;
 
 import com.google.devtools.depan.eclipse.ui.nodes.trees.NodeWrapper;
 import com.google.devtools.depan.eclipse.ui.nodes.trees.NodeWrapperTreeSorter;
-import com.google.devtools.depan.eclipse.ui.nodes.trees.ViewerRoot;
 import com.google.devtools.depan.model.GraphNode;
 
 import com.google.common.collect.Sets;
@@ -105,10 +104,8 @@ public class CheckNodeTreeView extends GraphNodeViewer {
 
   public void handleSelectNone() {
     super.handleSelectNone();
-    ViewerRoot viewerRoot = (ViewerRoot) tree.getInput();
-    for (Object root : viewerRoot.getRoots()) {
-      tree.setSubtreeChecked(root, false);
-    }
+    checkedProvider.clearNodes();
+    tree.refresh();
   }
 
   public GraphNode getFirstNode() {
@@ -172,6 +169,10 @@ public class CheckNodeTreeView extends GraphNodeViewer {
     @Override
     public boolean isGrayed(Object element) {
       return false;
+    }
+
+    public void clearNodes() {
+      checkedNodes.clear();
     }
 
     public void addNode(GraphNode addition) {
