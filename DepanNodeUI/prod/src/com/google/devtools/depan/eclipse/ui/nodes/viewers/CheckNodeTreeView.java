@@ -67,14 +67,32 @@ public class CheckNodeTreeView extends GraphNodeViewer {
     result.addCheckStateListener(new ICheckStateListener() {
       @Override
       public void checkStateChanged(CheckStateChangedEvent event) {
-        if (recursiveTreeSelect) {
-          tree.setSubtreeChecked(event.getElement(), event.getChecked());
+        Object element = event.getElement();
+        boolean checked = event.getChecked();
+        if (element instanceof NodeWrapper) {
+          NodeWrapper<?> wrapper = (NodeWrapper<?>) element;
+          if (recursiveTreeSelect) {
+            selectChildren(wrapper, checked);
+            tree.refresh(element, true);
+          } else {
+            checkedProvider.updateNode(wrapper.getNode(), checked);
+          }
         }
       }
     });
 
     tree = result;
     return result;
+  }
+
+  private void selectChildren(NodeWrapper<?> wrapper, boolean checked) {
+    checkedProvider.updateNode(wrapper.getNode(), checked);
+
+    for (Object child : wrapper.getChildren()) {
+      if (child instanceof NodeWrapper) {
+        selectChildren((NodeWrapper<?>) child, checked);
+      }
+    }
   }
 
   public void setRecursive(boolean recursiveTreeSelect) {
@@ -166,6 +184,14 @@ public class CheckNodeTreeView extends GraphNodeViewer {
 
     public void removeNode(GraphNode subtrahend) {
       checkedNodes.remove(subtrahend);
+    }
+
+    public void updateNode(GraphNode node, boolean checked) {
+      if (checked) {
+        addNode(node);
+      } else {
+        removeNode(node);
+      }
     }
   }
 }

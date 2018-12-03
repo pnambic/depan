@@ -287,15 +287,6 @@ public class NodeListEditor extends EditorPart {
     setHierachyInput(graphResources.getDefaultEdgeMatcher().getDocument());
   }
 
-  public void setHierachyInput(GraphEdgeMatcherDescriptor document) {
-    EdgeMatcher<String> matcher = document.getInfo();
-    GraphData<GraphNode> graphData = hierarchies.getHierarchy(matcher);
-    GraphEditorNodeViewProvider<GraphNode> provider =
-        new GraphEditorNodeViewProvider<GraphNode>(graphData);
-    checkNodeTreeView.setNodeViewProvider(provider);
-    infoPanel.setMatcherName(document.getName());
-  }
-
   /////////////////////////////////////
   // UX Handler
 
@@ -330,8 +321,21 @@ public class NodeListEditor extends EditorPart {
     checkNodeTreeView.handleExpandAll();
   }
 
-  public Collection<GraphNode> getSelectedNodes() {
-    return checkNodeTreeView.getSelectedNodes();
+  public Collection<GraphNode> getCheckedNodes() {
+    return checkNodeTreeView.getCheckedNodes();
+  }
+
+  public GraphNode getTopNode(Collection<GraphNode> source) {
+    return source.isEmpty() ? null : source.iterator().next();
+  }
+
+  public void setHierachyInput(GraphEdgeMatcherDescriptor document) {
+    EdgeMatcher<String> matcher = document.getInfo();
+    GraphData<GraphNode> graphData = hierarchies.getHierarchy(matcher);
+    GraphEditorNodeViewProvider<GraphNode> provider =
+        new GraphEditorNodeViewProvider<GraphNode>(graphData);
+    checkNodeTreeView.setNodeViewProvider(provider);
+    infoPanel.setMatcherName(document.getName());
   }
 
   public void runFromGraphDocWizard(

@@ -272,6 +272,10 @@ public class GraphEditor extends MultiPageEditorPart {
     return checkNodeTreeView.getSelectedNodes();
   }
 
+  public GraphNode getTopNode(Collection<GraphNode> source) {
+    return source.isEmpty() ? null : source.iterator().next();
+  }
+
   public void setHierachyInput(GraphEdgeMatcherDescriptor document) {
     EdgeMatcher<String> matcher = document.getInfo();
     GraphData<GraphNode> graphData = hierarchies.getHierarchy(matcher);

@@ -67,8 +67,8 @@ public class NewFromNodelistMenu extends ContributionItem
     MenuItem newItem = new MenuItem(parent, SWT.CASCADE);
     newItem.setText("New Analysis...");
 
-    Collection<GraphNode> nodes = editor.getSelectedNodes();
-    GraphNode topNode = nodes.isEmpty() ? null : nodes.iterator().next();
+    Collection<GraphNode> nodes = editor.getCheckedNodes();
+    GraphNode topNode = editor.getTopNode(nodes);
     WizardContext context = new WizardContext(editor, topNode, nodes);
 
     Menu newMenu = new Menu(newItem);
