@@ -40,6 +40,7 @@ import com.google.devtools.depan.graph.api.RelationSet;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResources;
 import com.google.devtools.depan.graph_doc.model.DependencyModel;
 import com.google.devtools.depan.graph_doc.model.GraphDocument;
+import com.google.devtools.depan.graph_doc.model.GraphModelReference;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptor;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptors;
 import com.google.devtools.depan.model.GraphEdge;
@@ -93,7 +94,6 @@ import com.google.common.collect.Lists;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -415,12 +415,8 @@ public class ViewEditor extends MultiPageEditorPart {
     viewInfo.removePrefsListener(listener);
   }
 
-  public GraphDocument getParentGraphDoc() {
-    return viewInfo.getComponents().getParentGraph().getGraph();
-  }
-
-  public IResource getParentGraphPath() {
-    return viewInfo.getComponents().getParentGraph().getLocation();
+  public GraphModelReference getParentGraphRef() {
+    return viewInfo.getComponents().getParentGraph();
   }
 
   public GraphModel getParentGraph() {

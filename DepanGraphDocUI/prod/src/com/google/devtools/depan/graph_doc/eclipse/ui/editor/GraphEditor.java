@@ -28,6 +28,7 @@ import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResources;
 import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.GraphViewInfoPanel;
 import com.google.devtools.depan.graph_doc.model.DependencyModel;
 import com.google.devtools.depan.graph_doc.model.GraphDocument;
+import com.google.devtools.depan.graph_doc.model.GraphModelReference;
 import com.google.devtools.depan.graph_doc.persistence.ResourceCache;
 import com.google.devtools.depan.matchers.eclipse.ui.widgets.EdgeMatcherSaveLoadConfig;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptor;
@@ -72,9 +73,7 @@ public class GraphEditor extends MultiPageEditorPart {
   /////////////////////////////////////
   // Editor input data
 
-  private IFile file = null;
-
-  private GraphDocument graph = null;
+  GraphModelReference graphRef;
 
   private GraphResources graphResources;
 
@@ -103,10 +102,18 @@ public class GraphEditor extends MultiPageEditorPart {
    * the underlying view document.
    */
   public IProject getResourceProject() {
+    if (null == graphRef) {
+      return null;
+    }
+    IFile file = graphRef.getLocation();
     if (null != file) {
       return file.getProject();
     }
     return null;
+  }
+
+  private GraphDocument getGraphDoc() {
+    return graphRef.getGraph();
   }
 
   /////////////////////////////////////
@@ -147,16 +154,17 @@ public class GraphEditor extends MultiPageEditorPart {
     }
 
     // load the graph
-    file = ((IFileEditorInput) input).getFile();
+    IFile file = ((IFileEditorInput) input).getFile();
 
     GraphDocLogger.LOG.info("Reading {}", file.getRawLocationURI());
-    graph = ResourceCache.fetchGraphDocument(file);
+    GraphDocument graph = ResourceCache.fetchGraphDocument(file);
     GraphDocLogger.LOG.info("  DONE");
+    graphRef = new GraphModelReference(file, graph);
 
-    DependencyModel model = graph.getDependencyModel();
+    DependencyModel model = getGraphDoc().getDependencyModel();
     graphResources = GraphResourceBuilder.forModel(model);
     hierarchies = new HierarchyCache<GraphNode>(
-        NodeTreeProviders.GRAPH_NODE_PROVIDER, graph.getGraph());
+        NodeTreeProviders.GRAPH_NODE_PROVIDER, getGraphDoc().getGraph());
 
     // set the title to the filename, excepted the file extension
     String title = file.getName();
@@ -289,7 +297,7 @@ public class GraphEditor extends MultiPageEditorPart {
   public void runFromGraphDocWizard(
       FromGraphDocWizard wizard, GraphNode topNode, Collection<GraphNode> nodes) {
     String name = FromGraphDocWizard.calcDetailName(topNode);
-    wizard.init(file, graph, graphResources, nodes, name);
+    wizard.init(graphRef, graphResources, nodes, name);
 
     // Run the wizard.
     WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);

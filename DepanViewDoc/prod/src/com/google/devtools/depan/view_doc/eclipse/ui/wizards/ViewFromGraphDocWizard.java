@@ -64,8 +64,7 @@ public class ViewFromGraphDocWizard extends FromGraphDocWizard {
     String basename = calcName();
 
     // Create ViewDocument elements
-    GraphModelReference graphRef =
-        new GraphModelReference(getGraphFile(), getGraphDoc());
+    GraphModelReference graphRef = getGraphModelReference();
 
     ViewPreferences userPrefs = new ViewPreferences();
     PropertyDocumentReference<GraphEdgeMatcherDescriptor> matcher =

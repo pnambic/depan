@@ -54,8 +54,7 @@ public class NodeListFromGraphDocWizard extends FromGraphDocWizard {
     String basename = calcName();
 
     // Create ViewDocument elements
-    GraphModelReference graphRef =
-        new GraphModelReference(getGraphFile(), getGraphDoc());
+    GraphModelReference graphRef = getGraphModelReference();
 
     NodeListDocument viewInfo = new NodeListDocument(graphRef, getNodes());
 

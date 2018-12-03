@@ -341,7 +341,7 @@ public class NodeListEditor extends EditorPart {
   public void runFromGraphDocWizard(
       FromGraphDocWizard wizard, GraphNode topNode, Collection<GraphNode> nodes) {
     String name = FromGraphDocWizard.calcDetailName(topNode);
-    wizard.init(file, nodeListInfo.getGraphDocument(), graphResources, nodes, name);
+    wizard.init(nodeListInfo.getReferenceGraph(), graphResources, nodes, name);
 
     // Run the wizard.
     WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);

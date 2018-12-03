@@ -17,7 +17,7 @@
 package com.google.devtools.depan.graph_doc.eclipse.ui.plugins;
 
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResources;
-import com.google.devtools.depan.graph_doc.model.GraphDocument;
+import com.google.devtools.depan.graph_doc.model.GraphModelReference;
 import com.google.devtools.depan.model.GraphNode;
 
 import org.eclipse.core.resources.IFile;
@@ -30,28 +30,26 @@ import java.util.Collection;
  */
 public abstract class FromGraphDocWizard extends Wizard {
 
-  private IFile graphFile;
-  private GraphDocument graphDoc;
+  private GraphModelReference graphModelReference;
   private GraphResources graphResources;
   private Collection<GraphNode> nodes;
   private String detail;
 
   public void init(
-      IFile graphFile, GraphDocument graphDoc, GraphResources graphResources,
+      GraphModelReference graphModelReference, GraphResources graphResources,
       Collection<GraphNode> nodes, String detail) {
-    this.graphFile = graphFile;
-    this.graphDoc = graphDoc;
+    this.graphModelReference = graphModelReference;
     this.graphResources = graphResources;
     this.nodes = nodes;
     this.detail = detail;
   }
 
   public IFile getGraphFile() {
-    return graphFile;
+    return graphModelReference.getLocation();
   }
 
-  public GraphDocument getGraphDoc() {
-    return graphDoc;
+  public GraphModelReference getGraphModelReference() {
+    return graphModelReference;
   }
 
   protected GraphResources getGraphResources() {
@@ -73,7 +71,8 @@ public abstract class FromGraphDocWizard extends Wizard {
     if (null == getNodes()) {
       return false;
     }
-    return getNodes().size() == getGraphDoc().getGraph().getNodes().size();
+    return getNodes().size() == 
+        getGraphModelReference().getGraph().getGraph().getNodes().size();
   }
 
   public static String calcDetailName(GraphNode node) {

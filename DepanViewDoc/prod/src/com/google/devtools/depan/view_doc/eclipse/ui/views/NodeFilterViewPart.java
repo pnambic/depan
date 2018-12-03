@@ -48,7 +48,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -392,10 +391,7 @@ public class NodeFilterViewPart extends AbstractViewDocViewPart {
 
     if (choice instanceof FromGraphDocContributor) {
       FromGraphDocWizard wizard = ((FromGraphDocContributor) choice).newWizard();
-      wizard.init(
-          (IFile) editor.getParentGraphPath(),
-          editor.getParentGraphDoc(),
-          editor.getGraphResources(),
+      wizard.init(editor.getParentGraphRef(), editor.getGraphResources(),
           nodes, name);
       return wizard;
     }
