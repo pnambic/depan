@@ -37,7 +37,7 @@ import org.eclipse.ui.services.IServiceLocator;
 import java.util.Collection;
 import java.util.Map.Entry;
 
-public class NewFromNodelistMenu extends ContributionItem
+public class NewFromNodeListMenu extends ContributionItem
     implements IWorkbenchContribution {
 
   private IServiceLocator serviceLocator;

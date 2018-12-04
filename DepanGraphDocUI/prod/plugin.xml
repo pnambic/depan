@@ -164,7 +164,7 @@
                   visible="true">
             </separator>
             <dynamic
-                  class="com.google.devtools.depan.nodelist_doc.eclipse.ui.widgets.NewFromNodelistMenu"
+                  class="com.google.devtools.depan.nodelist_doc.eclipse.ui.widgets.NewFromNodeListMenu"
                   id="com.google.devtools.depan.nodelist_doc.eclipse.ui.document.NewFromGraphDoc">
             </dynamic>
          </menu>
