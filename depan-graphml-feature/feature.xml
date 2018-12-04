@@ -2,7 +2,7 @@
 <feature
       id="com.pnambic.depan.graphml.feature"
       label="DepAn GraphML Feature"
-      version="1.0.0.qualifier"
+      version="2.1.0.qualifier"
       provider-name="Pnambic Computing">
 
    <description url="http://www.example.com/description">
