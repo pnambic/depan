@@ -37,7 +37,7 @@ public class SubtractNodesTest {
     GraphDocument minusDoc = TestUtils.buildTestDoc(4);
 
     SubtractNodes subtract = new SubtractNodes(baseDoc.getGraph());
-    subtract.subtract(minusDoc.getGraph());
+    subtract.subtract(minusDoc.getGraph().getNodes());
 
     Collection<GraphNode> testNodes = subtract.getNodes();
     assertEquals(1, testNodes.size());

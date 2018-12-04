@@ -20,6 +20,7 @@ import com.google.devtools.depan.model.GraphModel;
 import com.google.devtools.depan.model.GraphNode;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,8 +38,15 @@ public class SubtractNodes {
     nodeMap = graph.getNodesMap();
   }
 
-  public void subtract(GraphModel minus) {
-    for (GraphNode remove : minus.getNodes()) {
+  public SubtractNodes(Collection<GraphNode> nodes) {
+    nodeMap = new HashMap<>(nodes.size());
+    for (GraphNode node : nodes) {
+      nodeMap.put(node.getId(), node);
+    }
+  }
+
+  public void subtract(Collection<GraphNode> nodes) {
+    for (GraphNode remove : nodes) {
       String key = remove.getId();
       if (nodeMap.containsKey(key)) {
         nodeMap.remove(key);

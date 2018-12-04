@@ -30,7 +30,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
-import java.net.URI;
 import java.util.Map;
 
 /**
@@ -191,8 +190,8 @@ public class ResourceCache implements IResourceChangeListener {
 
     @Override
     public boolean visit(IResourceDelta delta) {
-      URI resourceKey = delta.getResource().getLocationURI();
-      loadedGraphs.remove(resourceKey);
+      IPath resourcePath = delta.getResource().getFullPath();
+      loadedGraphs.remove(resourcePath);
       return true;
     }
   }

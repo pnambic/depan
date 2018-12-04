@@ -167,6 +167,19 @@
                   class="com.google.devtools.depan.nodelist_doc.eclipse.ui.widgets.NewFromNodeListMenu"
                   id="com.google.devtools.depan.nodelist_doc.eclipse.ui.document.NewFromGraphDoc">
             </dynamic>
+            <command
+                  commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.Combine"
+                  id="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.Combine"
+                  label="Combine..."
+                  style="push"
+                  tooltip="Combine with another node list">
+               <visibleWhen
+                     checkEnabled="false">
+                  <reference
+                        definitionId="com.google.devtools.depan.nodelist_doc.eclipse.ui.editor.isNodeListEditorActive">
+                  </reference>
+               </visibleWhen>
+            </command>
          </menu>
          <menu
                id="eclipse.ui.main.menu.View"
@@ -277,6 +290,11 @@
             id="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.SelectNone"
             name="Select None">
       </command>
+      <command
+            description="Combine NodeLists"
+            id="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.Combine"
+            name="Combine NodeLists">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -311,6 +329,10 @@
       <handler
             class="com.google.devtools.depan.nodelist_doc.eclipse.ui.handlers.SelectNoneHandler"
             commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.SelectNone">
+      </handler>
+      <handler
+            class="com.google.devtools.depan.nodelist_doc.eclipse.ui.handlers.CombineHandler"
+            commandId="com.google.devtools.depan.nodelist_doc.eclipse.ui.command.Combine">
       </handler>
    </extension>
 

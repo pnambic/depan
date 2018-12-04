@@ -348,6 +348,10 @@ public class NodeListEditor extends EditorPart {
     dialog.open();
   }
 
+  public void runCombineWizard() {
+    
+  }
+
   /////////////////////////////////////
   // Support methods
 

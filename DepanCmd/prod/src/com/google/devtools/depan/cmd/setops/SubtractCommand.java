@@ -53,7 +53,7 @@ public class SubtractCommand extends AbstractCommandExec {
       if (null == subtractDoc) {
         continue;
       }
-      subtract.subtract(subtractDoc.getGraph());
+      subtract.subtract(subtractDoc.getGraph().getNodes());
     }
 
     GraphModelReference parentGraph =

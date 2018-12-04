@@ -19,7 +19,9 @@ package com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards;
 import com.google.devtools.depan.graph_doc.model.GraphDocument;
 import com.google.devtools.depan.graph_doc.model.GraphModelReference;
 import com.google.devtools.depan.graph_doc.operations.SubtractNodes;
-import com.google.devtools.depan.graph_doc.persistence.GraphModelXmlPersist;
+import com.google.devtools.depan.graph_doc.persistence.ResourceCache;
+import com.google.devtools.depan.model.GraphModel;
+import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.nodelist_doc.model.NodeListDocument;
 import com.google.devtools.depan.nodelist_doc.persistence.NodeListDocXmlPersist;
 import com.google.devtools.depan.persistence.AbstractDocXmlPersist;
@@ -30,10 +32,12 @@ import com.google.devtools.depan.platform.eclipse.ui.wizards.AbstractNewDocument
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 import java.io.IOException;
-import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Wizard to create new node lists by subtraction.
@@ -81,37 +85,99 @@ public class NewSubtractNodesWizard
 
     String baseName = page.getMinuend();
     IFile baseFile = WorkspaceTools.buildResourceFile(baseName);
-    GraphDocument baseDoc = buildGraphDoc(baseFile.getLocationURI());
-
-    SubtractNodes subtract = new SubtractNodes(baseDoc.getGraph());
-    for (IResource name : page.getSubtrahends()) {
-      GraphDocument subtractDoc = buildGraphDoc(name.getLocationURI());
-      if (null == subtractDoc) {
-        continue;
-      }
-      subtract.subtract(subtractDoc.getGraph());
+    NodeListSubtractBuilder builder = createNodeListSubtractBuilder(baseFile);
+    if (null == builder) {
+      return null;
     }
 
-    GraphModelReference parentGraph =
-        new GraphModelReference(baseName, baseDoc);
-    return new NodeListDocument(parentGraph, subtract.getNodes());
+    for (IResource name : page.getSubtrahends()) {
+      builder.subtract(getGraphNodes(name));
+    }
+
+    return builder.build();
   }
 
-  /**
-   * Provide the {@link GraphDocument} associated
-   * with the supplied {@link URI}.
-   * 
-   * If the URI fails to load as a {@link GraphDocument}, writes a message
-   * to the log and returns {@code null}.
-   */
-  private GraphDocument buildGraphDoc(URI graphUri) {
+  private static class NodeListSubtractBuilder {
+    private final GraphModelReference parentGraph;
+    private final SubtractNodes subtract;
+
+    public NodeListSubtractBuilder(
+        GraphModelReference parentGraph, SubtractNodes subtract) {
+      this.parentGraph = parentGraph;
+      this.subtract = subtract;
+    }
+
+    public NodeListSubtractBuilder(
+        GraphModelReference parentGraph, GraphModel graph) {
+      this(parentGraph, new SubtractNodes(graph));
+    }
+
+    public NodeListSubtractBuilder(
+        GraphModelReference parentGraph, Collection<GraphNode> baseNodes) {
+      this(parentGraph, new SubtractNodes(baseNodes));
+    }
+
+    public void subtract(Collection<GraphNode> nodes) {
+      subtract.subtract(nodes);
+    }
+
+    public NodeListDocument build() {
+      return new NodeListDocument(parentGraph, subtract.getNodes());
+    }
+  }
+
+  private NodeListSubtractBuilder createNodeListSubtractBuilder(IFile baseFile) {
+    String ext = baseFile.getFileExtension();
+    if (ext == null) {
+      return null;
+    }
+
+    // This should be an extension point
+    if (GraphDocument.EXTENSION.equals(ext)) {
+      GraphDocument baseDoc = ResourceCache.fetchGraphDocument(baseFile);
+      GraphModelReference graphRef = new GraphModelReference(baseFile, baseDoc);
+      GraphModel graph = graphRef.getGraph().getGraph();
+      return new NodeListSubtractBuilder(graphRef, graph);
+    }
+    if (NodeListDocument.EXTENSION.equals(ext)) {
+      NodeListDocument nodeListDoc = buildNodeListDoc(baseFile);
+      GraphModelReference graphRef = nodeListDoc.getReferenceGraph();
+      Collection<GraphNode> nodes = nodeListDoc.getNodes();
+      return new NodeListSubtractBuilder(graphRef, nodes);
+    }
+    return null;
+  }
+
+  private Collection<GraphNode> getGraphNodes(IResource name) {
+    String ext = name.getFileExtension();
+    if (ext == null) {
+      return Collections.emptyList();
+    }
+
+    IFile baseFile = WorkspaceTools.buildResourceFile(name.getFullPath());
+
+    // This should be an extension point
+    if (GraphDocument.EXTENSION.equals(ext)) {
+      GraphDocument baseDoc = ResourceCache.fetchGraphDocument(baseFile);
+      return baseDoc.getGraph().getNodes();
+    }
+    if (NodeListDocument.EXTENSION.equals(ext)) {
+      NodeListDocument nodeListDoc = buildNodeListDoc(baseFile);
+      return nodeListDoc.getNodes();
+    }
+
+    return Collections.emptyList();
+  }
+
+  private NodeListDocument buildNodeListDoc(IFile nodeListDefn) {
+    IPath label = nodeListDefn.getProjectRelativePath();
     try {
-      PersistenceLogger.LOG.info("Loading GraphDoc from {}", graphUri);
-      GraphModelXmlPersist loader = GraphModelXmlPersist.build(true);
-      return loader.load(graphUri);
+      PersistenceLogger.LOG.info("Loading NodeList from {}", label);
+      NodeListDocXmlPersist loader = NodeListDocXmlPersist.buildForLoad(nodeListDefn);
+      return loader.load(nodeListDefn.getLocationURI());
     } catch (RuntimeException err) {
       PersistenceLogger.LOG.error(
-          "Unable to load GraphDoc from {}", graphUri, err);
+          "Unable to load NodeList from {}", label, err);
     }
     return null;
   }
