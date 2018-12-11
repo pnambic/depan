@@ -27,9 +27,11 @@ import com.google.devtools.depan.graph_doc.eclipse.ui.plugins.FromGraphDocWizard
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResourceBuilder;
 import com.google.devtools.depan.graph_doc.eclipse.ui.resources.GraphResources;
 import com.google.devtools.depan.graph_doc.eclipse.ui.widgets.GraphViewInfoPanel;
+import com.google.devtools.depan.graph_doc.model.GraphModelReference;
 import com.google.devtools.depan.matchers.eclipse.ui.widgets.EdgeMatcherSaveLoadConfig;
 import com.google.devtools.depan.matchers.models.GraphEdgeMatcherDescriptor;
 import com.google.devtools.depan.model.GraphNode;
+import com.google.devtools.depan.nodelist_doc.eclipse.ui.wizards.CombineNodeListWizard;
 import com.google.devtools.depan.nodelist_doc.model.NodeListDocument;
 import com.google.devtools.depan.nodelist_doc.persistence.NodeListDocXmlPersist;
 import com.google.devtools.depan.platform.PlatformTools;
@@ -304,6 +306,10 @@ public class NodeListEditor extends EditorPart {
     checkNodeTreeView.setRecursive(!state);
   }
 
+  public void setCheckedNodes(Collection<GraphNode> checkedNodes) {
+    checkNodeTreeView.setCheckedNodes(checkedNodes);
+  }
+
   public void handleHierarchyFrom() {
     Shell shell = getEditorSite().getShell();
     PropertyDocumentReference<GraphEdgeMatcherDescriptor> rsrc =
@@ -323,6 +329,10 @@ public class NodeListEditor extends EditorPart {
 
   public Collection<GraphNode> getCheckedNodes() {
     return checkNodeTreeView.getCheckedNodes();
+  }
+
+  public GraphModelReference getGraphModelReference() {
+    return nodeListInfo.getReferenceGraph();
   }
 
   public GraphNode getTopNode(Collection<GraphNode> source) {
@@ -349,7 +359,11 @@ public class NodeListEditor extends EditorPart {
   }
 
   public void runCombineWizard() {
-    
+    CombineNodeListWizard wizard = new CombineNodeListWizard(this);
+
+    // Run the wizard.
+    WizardDialog dialog = new WizardDialog(getSite().getShell(), wizard);
+    dialog.open();
   }
 
   /////////////////////////////////////

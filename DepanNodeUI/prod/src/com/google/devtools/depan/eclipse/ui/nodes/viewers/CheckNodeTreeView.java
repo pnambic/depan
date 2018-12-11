@@ -140,6 +140,11 @@ public class CheckNodeTreeView extends GraphNodeViewer {
     return checkedProvider.getCheckedNodes();
   }
 
+  public void setCheckedNodes(Collection<GraphNode> checkedNodes) {
+    checkedProvider.setCheckedNodes(checkedNodes);
+    tree.refresh();
+  }
+
   public static class ControlCheckStateProvider implements ICheckStateProvider {
 
     private final Collection<GraphNode> checkedNodes = new HashSet<GraphNode>();
@@ -185,6 +190,11 @@ public class CheckNodeTreeView extends GraphNodeViewer {
 
     public void removeNode(GraphNode subtrahend) {
       checkedNodes.remove(subtrahend);
+    }
+
+    public void setCheckedNodes(Collection<GraphNode> nodes) {
+      checkedNodes.clear();
+      checkedNodes.addAll(nodes);
     }
 
     public void updateNode(GraphNode node, boolean checked) {

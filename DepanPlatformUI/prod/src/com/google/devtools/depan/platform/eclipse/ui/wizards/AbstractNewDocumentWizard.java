@@ -42,7 +42,6 @@ public abstract class AbstractNewDocumentWizard<T> extends Wizard
   private ISelection selection;
 
   /**
-   * Constructor for NewGraphWizard.
    * Create the wizard (with a progress monitor)
    */
   public AbstractNewDocumentWizard() {
