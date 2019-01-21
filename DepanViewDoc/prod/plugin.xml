@@ -375,5 +375,29 @@
             name="Node Rendering options">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="com.google.devtools.depan.eclipse.perspective">
+         <viewShortcut
+               id="com.google.devtools.depan.view_doc.eclipse.ui.views.EdgeDisplayViewPart">
+         </viewShortcut>
+         <viewShortcut
+               id="com.google.devtools.depan.view_doc.eclipse.ui.views.NodeDisplayViewPart">
+         </viewShortcut>
+         <viewShortcut
+               id="com.google.devtools.depan.view_doc.eclipse.ui.views.NodeFilterViewPart">
+         </viewShortcut>
+         <viewShortcut
+               id="com.google.devtools.depan.view_doc.eclipse.ui.views.RelationDisplayViewPart">
+         </viewShortcut>
+         <viewShortcut
+               id="com.google.devtools.depan.view_doc.eclipse.ui.views.ScenePrefsViewPart">
+         </viewShortcut>
+         <viewShortcut
+               id="com.google.devtools.depan.view_doc.eclipse.ui.views.VisibleRelationsViewPart">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>

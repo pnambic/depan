@@ -37,7 +37,7 @@ public final class LinearTreeLayoutPlan extends TreeLayoutPlan {
   @Override
   protected HierarchicalTreeLayout buildTreeLayout(LayoutContext context) {
     int horzSpac = Options.getValue(horizontalSpace, 12);
-    int vertSpac = Options.getValue(verticalSpace, 1);
+    int vertSpac = Options.getValue(verticalSpace, 3);
     return new LinearTreeLayout(
         context.getGraphModel(),
         context.getEdgeMatcher().getInfo(),

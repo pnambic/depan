@@ -161,7 +161,16 @@ public class NodeFilterViewPart extends AbstractViewDocViewPart {
   }
 
   private Composite setupSaveButtons(Composite parent) {
-    Composite result = Widgets.buildGridContainer(parent, 2);
+    Composite result = Widgets.buildGridContainer(parent, 3);
+
+    Button clearButton = Widgets.buildCompactPushButton(
+        result, "Clear");
+    clearButton.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        clearFilterTable();
+      }
+    });
 
     Button saveButton = Widgets.buildGridPushButton(
         result, "Save as NodeFilter...");
@@ -410,6 +419,15 @@ public class NodeFilterViewPart extends AbstractViewDocViewPart {
   /////////////////////////////////////
   // Persistence integration
 
+  private void clearFilterTable() {
+    ViewEditor editor = getEditor();
+    IProject project = editor.getResourceProject();
+    DependencyModel model = editor.getDependencyModel();
+
+    SteppingFilter synth = new SteppingFilter();
+    filterControl.setInput(synth, model, project);
+  }
+
   private void saveFilterTable() {
     // Run SaveResource dialog using current editor content.
 
@@ -429,7 +447,7 @@ public class NodeFilterViewPart extends AbstractViewDocViewPart {
   private void loadFilterTable() {
     ViewEditor editor = getEditor();
     Shell shell = editor.getSite().getShell();
-    IProject project = getEditor().getResourceProject();
+    IProject project = editor.getResourceProject();
 
     PropertyDocumentReference<ContextualFilterDocument> ref =
         ContextualFilterSaveLoadConfig.CONFIG.loadResource(shell, project);
