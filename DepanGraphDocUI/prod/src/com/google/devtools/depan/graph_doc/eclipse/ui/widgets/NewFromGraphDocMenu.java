@@ -67,9 +67,10 @@ public class NewFromGraphDocMenu extends ContributionItem
     MenuItem newItem = new MenuItem(parent, SWT.CASCADE);
     newItem.setText("New Analysis...");
 
+    // Use the tree picker to choose the highest expanded node that is checked.
     Collection<GraphNode> nodes = editor.getSelectedNodes();
     GraphNode topNode = nodes.isEmpty() ? null : nodes.iterator().next();
-    WizardContext context = new WizardContext(editor, topNode, nodes);
+    WizardContext context = new WizardContext(editor, topNode);
 
     Menu newMenu = new Menu(newItem);
     for (Entry<String, FromGraphDocContributor> entry
@@ -101,16 +102,14 @@ public class NewFromGraphDocMenu extends ContributionItem
   private static class WizardContext extends SelectionAdapter {
     final GraphEditor editor;
     final GraphNode topNode;
-    final Collection<GraphNode> nodes;
 
-    public WizardContext(GraphEditor editor,
-        GraphNode topNode, Collection<GraphNode> nodes) {
+    public WizardContext(GraphEditor editor, GraphNode topNode) {
       this.editor = editor;
       this.topNode = topNode;
-      this.nodes = nodes;
     }
 
     public void dispatch(FromGraphDocWizard wizard) {
+      Collection<GraphNode> nodes = editor.getCheckedNodes();
       editor.runFromGraphDocWizard(wizard, topNode, nodes);
     }
   }

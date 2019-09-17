@@ -280,6 +280,10 @@ public class GraphEditor extends MultiPageEditorPart {
     return checkNodeTreeView.getSelectedNodes();
   }
 
+  public Collection<GraphNode> getCheckedNodes() {
+    return checkNodeTreeView.getCheckedNodes();
+  }
+
   public GraphNode getTopNode(Collection<GraphNode> source) {
     return source.isEmpty() ? null : source.iterator().next();
   }
