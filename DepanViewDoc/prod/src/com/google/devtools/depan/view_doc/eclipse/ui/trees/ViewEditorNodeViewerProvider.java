@@ -17,6 +17,7 @@
 package com.google.devtools.depan.view_doc.eclipse.ui.trees;
 
 import com.google.devtools.depan.eclipse.ui.collapse.trees.CollapseDataWrapper;
+import com.google.devtools.depan.eclipse.ui.collapse.trees.CollapseTreeRoot;
 import com.google.devtools.depan.eclipse.ui.nodes.trees.ViewerRoot;
 import com.google.devtools.depan.eclipse.ui.nodes.viewers.NodeViewerProvider;
 import com.google.devtools.depan.model.GraphNode;
@@ -26,6 +27,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link NodeViewerProvider} for the {@link ViewEditor}.
@@ -51,6 +55,18 @@ public class ViewEditorNodeViewerProvider implements NodeViewerProvider {
   public void addItemActions(IMenuManager manager, Object menuElement) {
     if (menuElement instanceof ActionableViewerObject) {
       ((ActionableViewerObject) menuElement).addItemActions(manager, editor);
+    }
+    if (menuElement instanceof CollapseTreeRoot) {
+      CollapseTreeRoot<?> root = (CollapseTreeRoot<?>) menuElement;
+
+      manager.add(new Action("Uncollapse each", IAction.AS_PUSH_BUTTON) {
+        @Override
+        public void run() {
+          List<GraphNode> masterNodes = computeUncollapseSet(root);
+          editor.uncollapseMasterNodes(masterNodes);
+        }
+      });
+      
     }
 
     if (menuElement instanceof CollapseDataWrapper<?>) {
@@ -83,5 +99,14 @@ public class ViewEditorNodeViewerProvider implements NodeViewerProvider {
     } else {
       viewer.expandToLevel(1);
     }
+  }
+
+  private List<GraphNode> computeUncollapseSet(CollapseTreeRoot<?> root) {
+    CollapseDataWrapper<?>[] children = root.getChildren();
+    List<GraphNode> result = new ArrayList<>(children.length);
+    for (CollapseDataWrapper<?> child : children) {
+      result.add(child.getCollapseData().getMasterNode());
+    }
+    return result;
   }
 }

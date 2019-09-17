@@ -351,6 +351,10 @@ public class ViewEditor extends MultiPageEditorPart {
     viewInfo.uncollapseMasterNode(master);
   }
 
+  public void uncollapseMasterNodes(List<GraphNode> masters) {
+    viewInfo.uncollapseMasterNodes(masters);
+  }
+
   private void handleCollapseRendering(
       Collection<CollapseData> created,
       Collection<CollapseData> removed) {

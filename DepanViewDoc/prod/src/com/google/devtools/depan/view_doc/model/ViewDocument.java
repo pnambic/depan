@@ -310,6 +310,10 @@ public class ViewDocument {
     userPrefs.uncollapseMasterNode(master);
   }
 
+  public void uncollapseMasterNodes(List<GraphNode> masters) {
+    userPrefs.uncollapseMasterNodes(masters);
+  }
+
   /////////////////////////////////////
   // Factories for derived instances
 

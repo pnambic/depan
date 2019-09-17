@@ -40,6 +40,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -665,6 +666,23 @@ public class ViewPreferences {
       public void dispatch(ViewPrefsListener listener) {
         listener.collapseChanged(
             Collections.<CollapseData> emptyList(), delta, null);
+      }
+    });
+  }
+
+  public void uncollapseMasterNodes(Collection<GraphNode> masters) {
+    List<CollapseData> removed = new ArrayList<>(masters.size());
+    for (GraphNode master : masters) {
+      CollapseData data = collapser.getCollapseData(master);
+      collapser.uncollapse(master);
+      removed.add(data);
+    }
+
+    listeners.fireEvent(new SimpleDispatcher() {
+      @Override
+      public void dispatch(ViewPrefsListener listener) {
+        listener.collapseChanged(
+            Collections.<CollapseData> emptyList(), removed, null);
       }
     });
   }
