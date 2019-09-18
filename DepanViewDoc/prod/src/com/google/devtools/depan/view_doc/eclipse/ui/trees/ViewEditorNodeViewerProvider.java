@@ -21,11 +21,17 @@ import com.google.devtools.depan.eclipse.ui.collapse.trees.CollapseTreeRoot;
 import com.google.devtools.depan.eclipse.ui.nodes.trees.ViewerRoot;
 import com.google.devtools.depan.eclipse.ui.nodes.viewers.NodeViewerProvider;
 import com.google.devtools.depan.model.GraphNode;
+import com.google.devtools.depan.nodes.filters.eclipse.ui.plugins.ContextualFilterContributor;
+import com.google.devtools.depan.nodes.filters.eclipse.ui.plugins.ContextualFilterRegistry;
+import com.google.devtools.depan.nodes.filters.eclipse.ui.widgets.FilterEditorDialog;
+import com.google.devtools.depan.nodes.filters.model.ContextualFilter;
+import com.google.devtools.depan.nodes.filters.sequence.NodeKindFilter;
 import com.google.devtools.depan.view_doc.eclipse.ui.editor.ViewEditor;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.TreeViewer;
 
 import java.util.ArrayList;
@@ -73,7 +79,12 @@ public class ViewEditorNodeViewerProvider implements NodeViewerProvider {
           editor.uncollapseMasterNodes(masterNodes);
         }
       });
-      
+      manager.add(new Action("Select by type", IAction.AS_PUSH_BUTTON) {
+        @Override
+        public void run() {
+          selectByType();
+        }
+      });
     }
 
     if (menuElement instanceof CollapseDataWrapper<?>) {
@@ -128,4 +139,33 @@ public class ViewEditorNodeViewerProvider implements NodeViewerProvider {
     }
     return result;
   }
+
+  private void selectByType() {
+    // stubbed out ..
+  }
+
+/* Waiting for node-types
+  private void selectByType() {
+    editor.get
+    filter = new NodeKindFilter(null);
+  }
+
+  private ContextualFilter editFilter(ContextualFilter filter) {
+    ContextualFilterContributor<?> contrib =
+        ContextualFilterRegistry.findRegistryContributor(filter);
+    if (null == contrib) {
+      return null;
+    }
+
+    FilterEditorDialog<?> dialog =
+        contrib.buildEditorDialog(getShell(), filter, getModel(), getProject());
+    if (null == dialog) {
+      return null;
+    }
+    if (Dialog.OK == dialog.open()) {
+      return dialog.getResult();
+    }
+    return null;
+  }
+*/
 }
