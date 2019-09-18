@@ -58,7 +58,7 @@ public class NodeListViewProvider<T> implements NodeViewerProvider {
   }
 
   @Override
-  public void addMultiActions(IMenuManager manager) {
+  public void addMultiActions(IMenuManager manager, List<?> choices) {
   }
 
   @Override

@@ -63,6 +63,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import java.awt.Color;
@@ -114,7 +115,9 @@ public class NodeDisplayTableControl extends Composite {
 
     @Override
     protected TreeViewer createTreeViewer(Composite parent) {
-      TreeViewer result = super.createTreeViewer(parent);
+      int style = SWT.VIRTUAL | SWT.FULL_SELECTION | SWT.BORDER
+          | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI;
+      TreeViewer result = new TreeViewer(parent, style);
 
       // Initialize the table.
       Tree tree = result.getTree();
@@ -137,6 +140,10 @@ public class NodeDisplayTableControl extends Composite {
       result.setLabelProvider(new PartLabelProvider());
       result.setColumnProperties(EditColTableDef.getProperties(TABLE_DEF));
       result.setCellModifier(new PartCellModifier());
+      result.setContentProvider(new BaseWorkbenchContentProvider());
+      result.setComparator(SORTER);
+
+      setupHierarchyMenu(result);
 
       return result;
     }

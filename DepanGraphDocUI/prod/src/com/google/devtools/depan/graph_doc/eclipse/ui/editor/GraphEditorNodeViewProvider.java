@@ -25,6 +25,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 
+import java.util.List;
+
 /**
  * {@link NodeViewerProvider} for {@link GraphData} packaged information.
  * The {{@link #buildViewerRoots()} method returns the 
@@ -42,7 +44,7 @@ public class GraphEditorNodeViewProvider<T> implements NodeViewerProvider {
   }
 
   @Override
-  public void addMultiActions(IMenuManager manager) {
+  public void addMultiActions(IMenuManager manager, List<?> choices) {
   }
 
   @Override

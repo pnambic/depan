@@ -43,7 +43,7 @@ import java.util.List;
  */
 public class GraphNodeViewer extends Composite {
 
-  private static final NodeWrapperTreeSorter SORTER =
+  protected static final NodeWrapperTreeSorter SORTER =
       new NodeWrapperTreeSorter();
 
   private NodeViewerProvider provider;
@@ -119,7 +119,10 @@ public class GraphNodeViewer extends Composite {
     return result;
   }
 
-  private void setupHierarchyMenu(final TreeViewer viewer) {
+  /**
+   * Available for derived classes to integrated context menus for items.
+   */
+  protected void setupHierarchyMenu(final TreeViewer viewer) {
     MenuManager menuMgr = new MenuManager();
 
     Menu menu = menuMgr.createContextMenu(viewer.getControl());
@@ -134,7 +137,7 @@ public class GraphNodeViewer extends Composite {
           return;
         }
         if (choices.size() > 1) {
-          addMultiActions(manager);
+          addMultiActions(manager, choices);
           return;
         }
 
@@ -146,8 +149,8 @@ public class GraphNodeViewer extends Composite {
     viewer.getControl().setMenu(menu);
   }
 
-  private void addMultiActions(IMenuManager manager) {
-    provider.addMultiActions(manager);
+  private void addMultiActions(IMenuManager manager, List<?> choices) {
+    provider.addMultiActions(manager, choices);
   }
 
   private void addItemActions(IMenuManager manager, Object menuElement) {

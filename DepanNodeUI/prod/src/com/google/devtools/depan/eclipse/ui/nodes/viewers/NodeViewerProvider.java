@@ -6,6 +6,8 @@ import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
 
+import java.util.List;
+
 /**
  * @author <a href="leeca@pnambic.com">Lee Carver</a>
  */
@@ -22,7 +24,7 @@ public interface NodeViewerProvider {
    */
   public static final int AUTO_EXPAND_LIMIT = 1000;
 
-  void addMultiActions(IMenuManager manager);
+  void addMultiActions(IMenuManager manager, List<?> choices);
 
   void addItemActions(IMenuManager manager, Object menuElement);
 

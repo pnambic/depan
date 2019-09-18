@@ -29,6 +29,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeViewer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,10 +46,16 @@ public class ViewEditorNodeViewerProvider implements NodeViewerProvider {
   }
 
   @Override
-  public void addMultiActions(IMenuManager manager) {
-    // if (menuElement instanceof ActionableViewerObject) {
-    //   ((ActionableViewerObject) menuElement).addMultiActions(manager, editor);
-    // }
+  public void addMultiActions(IMenuManager manager, List<?> choices) {
+    List<GraphNode> masters = buildMastersFromChoices(choices);
+    if (!masters.isEmpty()) {
+      manager.add(new Action("Uncollapse selected", IAction.AS_PUSH_BUTTON) {
+        @Override
+        public void run() {
+          editor.uncollapseMasterNodes(masters);
+        }
+      });
+    }
   }
 
   @Override
@@ -62,7 +69,7 @@ public class ViewEditorNodeViewerProvider implements NodeViewerProvider {
       manager.add(new Action("Uncollapse each", IAction.AS_PUSH_BUTTON) {
         @Override
         public void run() {
-          List<GraphNode> masterNodes = computeUncollapseSet(root);
+          List<GraphNode> masterNodes = buildMastersFromRoot(root);
           editor.uncollapseMasterNodes(masterNodes);
         }
       });
@@ -101,11 +108,23 @@ public class ViewEditorNodeViewerProvider implements NodeViewerProvider {
     }
   }
 
-  private List<GraphNode> computeUncollapseSet(CollapseTreeRoot<?> root) {
+  private List<GraphNode> buildMastersFromRoot(CollapseTreeRoot<?> root) {
     CollapseDataWrapper<?>[] children = root.getChildren();
     List<GraphNode> result = new ArrayList<>(children.length);
     for (CollapseDataWrapper<?> child : children) {
       result.add(child.getCollapseData().getMasterNode());
+    }
+    return result;
+  }
+
+  private List<GraphNode> buildMastersFromChoices(List<?> choices) {
+    List<GraphNode> result = new ArrayList<>(choices.size());
+    for (Object choice : choices) {
+      if (choice instanceof CollapseDataWrapper) {
+        result.add(((CollapseDataWrapper<?>) choice).getCollapseData().getMasterNode());
+      } else {
+        return Collections.emptyList();
+      }
     }
     return result;
   }
