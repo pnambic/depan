@@ -17,13 +17,14 @@
 package com.google.devtools.depan.graph_doc.model;
 
 import com.google.devtools.depan.graph.api.Relation;
+import com.google.devtools.depan.graph.registry.NodeTypeRegistry;
 import com.google.devtools.depan.graph.registry.RelationRegistry;
+import com.google.devtools.depan.model.GraphNode;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,8 +47,12 @@ public class DependencyModel {
    * Order implies priority.
    * The {@code get(0)} element has the highest priority.
    */
-  public List<String> getNodeContribs() {
+  public List<String> getNodeTypeContribs() {
     return ImmutableList.copyOf(nodeContribIds);
+  }
+
+  public Collection<Class<? extends GraphNode>> getNodeTypes() {
+    return NodeTypeRegistry.getRegistryNodeTypes(nodeContribIds);
   }
 
   /**
@@ -73,7 +78,7 @@ public class DependencyModel {
     private final List<String> nodeContribIds = Lists.newArrayList();
     private final List<String> relationContribIds = Lists.newArrayList();
 
-    public void addNodeContrib(String nodeContribId) {
+    public void addNodeTypeContrib(String nodeContribId) {
       nodeContribIds.add(nodeContribId);
     }
 
@@ -88,7 +93,7 @@ public class DependencyModel {
 
   public static DependencyModel createFromRegistry() {
     return new DependencyModel(
-        Collections.<String>emptyList(),
+        NodeTypeRegistry.getRegistryContribIds(),
         RelationRegistry.getRegistryContribIds());
   }
 }

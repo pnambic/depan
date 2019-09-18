@@ -2,5 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="com.google.devtools.depan.graph.registry.relation" name="DepAn Relation Registry" schema="schema/com.google.devtools.depan.graph.registry.relation.exsd"/>
+   <extension-point id="com.google.devtools.depan.graph.registry.nodeType" name="DepAn NodeType Registry" schema="schema/com.google.devtools.depan.graph.registry.nodeType.exsd"/>
 
 </plugin>

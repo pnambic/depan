@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 The Depan Project Authors
+ * Copyright 2019 The Depan Project Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 package com.google.devtools.depan.graph.registry;
 
-import com.google.devtools.depan.graph.api.Relation;
+import com.google.devtools.depan.model.GraphNode;
 
 import java.util.Collection;
 
-public interface RelationContributor {
+public interface NodeTypeContributor {
 
   /**
-   * A human-sensible identifier for this collection of {@link Relation}s.
-   * The label is often shared with a {@code NodeContributor}.
+   * A human-sensible identifier for this collection of {@link GraphNode}s.
+   * The label is often shared with a {@code RelationContributor}.
    */
   String getLabel();
 
-  Collection<? extends Relation> getRelations();
+  Collection<Class<? extends GraphNode>> getNodeTypes();
 }

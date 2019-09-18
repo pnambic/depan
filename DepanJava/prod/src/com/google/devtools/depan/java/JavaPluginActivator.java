@@ -16,6 +16,7 @@
 
 package com.google.devtools.depan.java;
 
+import com.google.devtools.depan.filesystem.FileSystemNodeTypeContributor;
 import com.google.devtools.depan.filesystem.FileSystemRelationContributor;
 import com.google.devtools.depan.graph_doc.model.DependencyModel;
 
@@ -49,6 +50,8 @@ public class JavaPluginActivator implements BundleActivator {
     DependencyModel.Builder result = new DependencyModel.Builder();
     result.addRelationContrib(JavaRelationContributor.ID);
     result.addRelationContrib(FileSystemRelationContributor.ID);
+    result.addNodeTypeContrib(JavaNodeTypeContributor.ID);
+    result.addNodeTypeContrib(FileSystemNodeTypeContributor.ID);
     return result.build();
   }
 }

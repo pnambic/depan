@@ -61,7 +61,7 @@ public class MergeDependencyModel {
    * @param dependencyModel
    */
   public void merge(DependencyModel depModel) {
-    editContribOrder(currNodes, depModel.getNodeContribs());
+    editContribOrder(currNodes, depModel.getNodeTypeContribs());
     editContribOrder(currRels, depModel.getRelationContribs());
   }
 
