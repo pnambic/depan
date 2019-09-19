@@ -26,7 +26,7 @@ public class JavaNodeKindContributor implements NodeKindContributor {
   public static final String LABEL = "Java";
 
   public static final String ID =
-      "com.google.devtools.depan.java.JavaNodeTypeContributor";
+      "com.google.devtools.depan.java.JavaNodeKindContributor";
 
   @Override
   public String getLabel() {

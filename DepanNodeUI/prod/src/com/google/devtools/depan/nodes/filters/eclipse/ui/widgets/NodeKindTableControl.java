@@ -18,7 +18,6 @@ package com.google.devtools.depan.nodes.filters.eclipse.ui.widgets;
 
 import com.google.devtools.depan.graph.registry.NodeKindRegistry;
 import com.google.devtools.depan.model.Element;
-import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.platform.AlphabeticSorter;
 import com.google.devtools.depan.platform.InverseSorter;
 import com.google.devtools.depan.platform.LabelProviderToString;

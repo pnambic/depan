@@ -9,6 +9,13 @@
       </relation_contibutor>
    </extension>
    <extension
+         point="com.google.devtools.depan.graph.registry.nodeKind">
+      <node_kind_contributor
+            class="com.google.devtools.depan.javascript.JavaScriptNodeKindContributor"
+            id="com.google.devtools.depan.javascript.JavaScriptNodeKindContributor">
+      </node_kind_contributor>
+   </extension>
+   <extension
          point="com.google.devtools.depan.persistence.xstream.config">
       <xstream_config
             class="com.google.devtools.depan.javascript.JavaScriptXStreamConfig"
