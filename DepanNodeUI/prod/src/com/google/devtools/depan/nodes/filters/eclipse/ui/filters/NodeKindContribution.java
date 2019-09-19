@@ -16,15 +16,13 @@
 
 package com.google.devtools.depan.nodes.filters.eclipse.ui.filters;
 
+import com.google.devtools.depan.graph.registry.NodeKindRegistry;
 import com.google.devtools.depan.graph_doc.model.DependencyModel;
-import com.google.devtools.depan.model.Element;
 import com.google.devtools.depan.nodes.filters.eclipse.ui.widgets.FilterEditorDialog;
 import com.google.devtools.depan.nodes.filters.eclipse.ui.widgets.NodeKindFilterEditorControl;
 import com.google.devtools.depan.nodes.filters.model.ContextualFilter;
 import com.google.devtools.depan.nodes.filters.sequence.NodeKindFilter;
 import com.google.devtools.depan.nodes.filters.sequence.RelationCountFilter;
-
-import com.google.common.collect.ImmutableList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Composite;
@@ -52,7 +50,7 @@ public class NodeKindContribution
 
   @Override
   public NodeKindFilter createElementFilter() {
-    return new NodeKindFilter(ImmutableList.<Class<? extends Element>>of());
+    return new NodeKindFilter(NodeKindRegistry.getRegistryNodeKinds());
   }
 
   @Override
