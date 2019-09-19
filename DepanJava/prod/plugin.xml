@@ -9,11 +9,11 @@
       </relation_contibutor>
    </extension>
    <extension
-         point="com.google.devtools.depan.graph.registry.nodeType">
-      <node_type_contributor
-            class="com.google.devtools.depan.java.JavaNodeTypeContributor"
-            id="com.google.devtools.depan.java.JavaNodeTypeContributor">
-      </node_type_contributor>
+         point="com.google.devtools.depan.graph.registry.nodeKind">
+      <node_kind_contributor
+            class="com.google.devtools.depan.java.JavaNodeKindContributor"
+            id="com.google.devtools.depan.java.JavaNodeKindContributor">
+      </node_kind_contributor>
    </extension>
    <extension
          point="com.google.devtools.depan.persistence.xstream.config">

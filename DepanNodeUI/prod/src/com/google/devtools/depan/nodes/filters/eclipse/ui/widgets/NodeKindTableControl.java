@@ -16,7 +16,9 @@
 
 package com.google.devtools.depan.nodes.filters.eclipse.ui.widgets;
 
+import com.google.devtools.depan.graph.registry.NodeKindRegistry;
 import com.google.devtools.depan.model.Element;
+import com.google.devtools.depan.model.GraphNode;
 import com.google.devtools.depan.platform.AlphabeticSorter;
 import com.google.devtools.depan.platform.InverseSorter;
 import com.google.devtools.depan.platform.LabelProviderToString;
@@ -45,7 +47,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A control for selecting a set of Element types.
@@ -55,16 +60,6 @@ import java.util.Collection;
  * @author <a href="leeca@google.com">Lee Carver</a>
  */
 public class NodeKindTableControl extends Composite {
-
-  // PLACEHOLDER
-  public static interface ElementKindDescriptor {
-
-    Class<? extends Element> getElementKind();
-
-    String getElementKindName();
-
-    String getPluginName();
-  }
 
   private static final String COL_KIND = "Element Type";
   private static final String COL_SOURCE = "Source";
@@ -129,7 +124,7 @@ public class NodeKindTableControl extends Composite {
     kindViewer.setContentProvider(new ArrayContentProvider());
   }
 
-  public void setSelection(Collection<ElementKindDescriptor> selection) {
+  public void setSelection(Collection<Class<? extends Element>> selection) {
     kindViewer.setSelection(new StructuredSelection(selection.toArray()));
   }
 
@@ -139,18 +134,38 @@ public class NodeKindTableControl extends Composite {
    */
   public Collection<Class<? extends Element>> getSelectedElementKindSet() {
     Collection<Class<? extends Element>> result = Lists.newArrayList();
-    for(ElementKindDescriptor descr : getSelectedDescr()) {
-      result.add(descr.getElementKind());
+    for(Class<? extends Element> descr : getSelectedDescr()) {
+      result.add(descr);
     }
     return result;
   }
 
-  private Collection<ElementKindDescriptor> getSelectedDescr() {
+  private Collection<Class<? extends Element>> getSelectedDescr() {
     ISelection selection = kindViewer.getSelection();
-    return Selections.getSelection(selection, ElementKindDescriptor.class);
+    return getElementsList(selection);
   }
 
-  public void setInput(Collection<ElementKindDescriptor> elementKinds) {
+  private static List<Class<? extends Element>> getElementsList(
+      ISelection selection) {
+    List<?> choices = Selections.getObjects(selection);
+    if (choices.isEmpty()) {
+      return Collections.emptyList();
+    }
+    List<Class<? extends Element>> result = new ArrayList<>(choices.size());
+    for (Object item : choices) {
+      if (item instanceof Class<?>) {
+        result.add(coerceToElement(item));
+      }
+    }
+    return result;
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Class<? extends Element> coerceToElement(Object item) {
+    return (Class<? extends Element>) item;
+  }
+
+  public void setInput(Collection<Class<? extends Element>> elementKinds) {
     kindViewer.setInput(elementKinds);
   }
 
@@ -158,16 +173,16 @@ public class NodeKindTableControl extends Composite {
    * @param nodeKinds
    */
   @SuppressWarnings("unchecked")
-  public Collection<ElementKindDescriptor> findDescriptors(
+  public Collection<Class<? extends Element>> findDescriptors(
       Collection<Class<? extends Element>> nodeKinds) {
 
-    Collection<ElementKindDescriptor> result =
+    Collection<Class<? extends Element>> result =
         Lists.newArrayListWithExpectedSize(nodeKinds.size());
-    Collection<ElementKindDescriptor> descrs =
-        (Collection<ElementKindDescriptor>) kindViewer.getInput();
+    Collection<Class<? extends Element>> descrs =
+        (Collection<Class<? extends Element>>) kindViewer.getInput();
 
-    for (ElementKindDescriptor descr : descrs) {
-      if (nodeKinds.contains(descr.getElementKind())) {
+    for (Class<? extends Element> descr : descrs) {
+      if (nodeKinds.contains(descr)) {
         result.add(descr);
       }
     }
@@ -223,10 +238,10 @@ public class NodeKindTableControl extends Composite {
   // UX Actions
 
   private void invertSelection() {
-    Collection<ElementKindDescriptor> currSelection = getSelectedDescr();
-    Collection<ElementKindDescriptor> invert = Lists.newArrayList();
+    Collection<Class<? extends Element>> currSelection = getSelectedDescr();
+    Collection<Class<? extends Element>> invert = new ArrayList<>();
 
-    for (ElementKindDescriptor descr: getInput()) {
+    for (Class<? extends Element> descr: getInput()) {
       if (!currSelection.contains(descr)) {
         invert.add(descr);
       }
@@ -237,9 +252,9 @@ public class NodeKindTableControl extends Composite {
   }
 
   @SuppressWarnings("unchecked")
-  private Collection<ElementKindDescriptor> getInput() {
-    Collection<ElementKindDescriptor> result = 
-        (Collection<ElementKindDescriptor>) kindViewer.getInput();
+  private Collection<Class<? extends Element>> getInput() {
+    Collection<Class<? extends Element>> result = 
+        (Collection<Class<? extends Element>>) kindViewer.getInput();
     if (null == result) {
       return ImmutableList.of();
     }
@@ -312,19 +327,24 @@ public class NodeKindTableControl extends Composite {
 
     @Override
     public String getColumnText(Object element, int columnIndex) {
-      if (null == element) {
-        return null;
+      if (element instanceof Class<?>) {
+
+        @SuppressWarnings("unchecked")
+        Class<? extends Element> nodeKind = (Class<? extends Element>) element;
+
+        switch (columnIndex) {
+        case 0:
+          return nodeKind.getSimpleName();
+        case 1:
+          return getSourceLabelForNodeType(nodeKind);
+        }
       }
 
-      ElementKindDescriptor item = (ElementKindDescriptor) element;
-      switch (columnIndex) {
-      case 0:
-        return item.getElementKindName();
-      case 1:
-        return item.getPluginName();
-      }
-
-      return null;
+      return "";
     }
+  }
+
+  private static String getSourceLabelForNodeType(Class<? extends Element> nodeType) {
+    return NodeKindRegistry.getRegistryNodeKindSource(nodeType);
   }
 }

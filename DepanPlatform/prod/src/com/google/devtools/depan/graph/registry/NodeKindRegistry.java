@@ -16,7 +16,7 @@
 
 package com.google.devtools.depan.graph.registry;
 
-import com.google.devtools.depan.model.GraphNode;
+import com.google.devtools.depan.model.Element;
 import com.google.devtools.depan.platform.PlatformLogger;
 import com.google.devtools.depan.platform.plugin.ContributionEntry;
 import com.google.devtools.depan.platform.plugin.ContributionRegistry;
@@ -42,44 +42,44 @@ import java.util.Map;
  * 
  * @author Lee Carver
  */
-public class NodeTypeRegistry extends
-    ContributionRegistry<NodeTypeContributor> {
+public class NodeKindRegistry extends
+    ContributionRegistry<NodeKindContributor> {
 
   /**
    * Extension point name for persistence configuration
    */
   public final static String EXTENTION_POINT =
-      "com.google.devtools.depan.graph.registry.nodeType";
+      "com.google.devtools.depan.graph.registry.nodeKind";
 
   /**
    * Static instance. This class is a singleton.
    * It is created lazily on first access.
    */
-  private static NodeTypeRegistry INSTANCE = null;
+  private static NodeKindRegistry INSTANCE = null;
 
-  static class Entry extends ContributionEntry<NodeTypeContributor>{
+  static class Entry extends ContributionEntry<NodeKindContributor>{
 
     public Entry(String bundleId, IConfigurationElement element) {
       super(bundleId, element);
     }
 
     @Override
-    protected NodeTypeContributor createInstance() throws CoreException {
-      return (NodeTypeContributor) buildInstance(ATTR_CLASS);
+    protected NodeKindContributor createInstance() throws CoreException {
+      return (NodeKindContributor) buildInstance(ATTR_CLASS);
     }
   }
 
-  private Map<Class<? extends GraphNode>, NodeTypeContributor> nodeTypeToContrib =
+  private Map<Class<? extends Element>, NodeKindContributor> nodeKindToContrib =
       Maps.newHashMap();
 
   /**
    * Singleton class: private constructor to prevent instantiation.
    */
-  private NodeTypeRegistry() {
+  private NodeKindRegistry() {
   }
 
   @Override
-  protected ContributionEntry<NodeTypeContributor> buildEntry(
+  protected ContributionEntry<NodeKindContributor> buildEntry(
       String bundleId, IConfigurationElement element) {
     return new Entry(bundleId, element);
   }
@@ -87,7 +87,7 @@ public class NodeTypeRegistry extends
   @Override
   protected void reportException(String entryId, Exception err) {
     PlatformLogger.LOG.error(
-        "NodeType registry load failure for {}", entryId, err);
+        "NodeKind registry load failure for {}", entryId, err);
   }
 
   @Override
@@ -98,10 +98,10 @@ public class NodeTypeRegistry extends
 
   private void deriveDetails() {
     // Build reverse map from relation to contributor
-    for (ContributionEntry<NodeTypeContributor> entry : getContributions()) {
-      NodeTypeContributor contrib = entry.getInstance();
-      for (Class<? extends GraphNode> nodeTypes : contrib.getNodeTypes()) {
-        nodeTypeToContrib.put(nodeTypes, contrib);
+    for (ContributionEntry<NodeKindContributor> entry : getContributions()) {
+      NodeKindContributor contrib = entry.getInstance();
+      for (Class<? extends Element> nodeKind : contrib.getNodeKinds()) {
+        nodeKindToContrib.put(nodeKind, contrib);
       }
     }
   }
@@ -109,40 +109,40 @@ public class NodeTypeRegistry extends
   /////////////////////////////////////
   // Project Relations
 
-  public Collection<Class<? extends GraphNode>> getNodeTypes() {
-    return buildNodeTypes(getContributions());
+  public Collection<Class<? extends Element>> getNodeKinds() {
+    return buildNodeKinds(getContributions());
   }
 
-  public Collection<Class<? extends GraphNode>> getNodeTypes(Collection<String> contribIds) {
-    return buildNodeTypes(getContributions(contribIds));
+  public Collection<Class<? extends Element>> getNodeKinds(Collection<String> contribIds) {
+    return buildNodeKinds(getContributions(contribIds));
   }
 
   public List<String> getContribIds() {
     List<String> result = Lists.newArrayList();
-    for (ContributionEntry<NodeTypeContributor> contrib : getContributions()) {
+    for (ContributionEntry<NodeKindContributor> contrib : getContributions()) {
       result.add(contrib.getId());
     }
     return result;
   }
 
-  private Collection<Class<? extends GraphNode>> buildNodeTypes(
-      Collection<ContributionEntry<NodeTypeContributor>> contrib) {
+  private Collection<Class<? extends Element>> buildNodeKinds(
+      Collection<ContributionEntry<NodeKindContributor>> contrib) {
 
-    List<Class<? extends GraphNode>> result = Lists.newArrayList();
-    for (ContributionEntry<NodeTypeContributor> entry : contrib) {
-      result.addAll(entry.getInstance().getNodeTypes());
+    List<Class<? extends Element>> result = Lists.newArrayList();
+    for (ContributionEntry<NodeKindContributor> entry : contrib) {
+      result.addAll(entry.getInstance().getNodeKinds());
     }
     return result;
   }
 
-  private String getNodeTypeSource(Class<? extends GraphNode> nodeType) {
-    NodeTypeContributor result = nodeTypeToContrib.get(nodeType);
+  private String getNodeKindSource(Class<? extends Element> nodeKind) {
+    NodeKindContributor result = nodeKindToContrib.get(nodeKind);
     if (null != result) {
       return result.getLabel();
     }
 
     String msg = MessageFormat.format(
-        "- unsrcd {0} -", nodeType.getTypeName());
+        "- unsrcd {0} -", nodeKind.getTypeName());
     return msg;
   }
 
@@ -153,26 +153,26 @@ public class NodeTypeRegistry extends
    * Provide the {@code SourcePluginRegistry} singleton.
    * It is created lazily when needed.
    */
-  public static synchronized NodeTypeRegistry getInstance() {
+  public static synchronized NodeKindRegistry getInstance() {
     if (null == INSTANCE) {
-      INSTANCE = new NodeTypeRegistry();
+      INSTANCE = new NodeKindRegistry();
       INSTANCE.load(EXTENTION_POINT);
     }
     return INSTANCE;
   }
 
-  public static Collection<Class<? extends GraphNode>> getRegistryNodeTypes() {
-    return getInstance().getNodeTypes();
+  public static Collection<Class<? extends Element>> getRegistryNodeKinds() {
+    return getInstance().getNodeKinds();
   }
 
-  public static Collection<Class<? extends GraphNode>> getRegistryNodeTypes(
+  public static Collection<Class<? extends Element>> getRegistryNodeKinds(
       Collection<String> contribIds) {
-    return getInstance().getNodeTypes(contribIds);
+    return getInstance().getNodeKinds(contribIds);
   }
 
-  public static String getRegistryNodeTypeSource(
-      Class<? extends GraphNode> nodeType) {
-    return getInstance().getNodeTypeSource(nodeType);
+  public static String getRegistryNodeKindSource(
+      Class<? extends Element> nodeKind) {
+    return getInstance().getNodeKindSource(nodeKind);
   }
 
   public static List<String> getRegistryContribIds() {

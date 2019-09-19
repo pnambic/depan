@@ -35,6 +35,10 @@ import java.util.List;
  */
 public class Selections {
 
+  private Selections() {
+    // Prevent instantiations.
+  }
+
   /**
    * Provide a type correct collection based on the supplied selection
    * and type. Selection objects of a non-assignable type are silently

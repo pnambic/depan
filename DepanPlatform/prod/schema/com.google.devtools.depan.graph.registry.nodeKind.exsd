@@ -3,7 +3,7 @@
 <schema targetNamespace="com.google.devtools.depan.platform" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="com.google.devtools.depan.platform" id="com.google.devtools.depan.graph.registry.nodeType" name="DepAn NodeType Registry"/>
+         <meta.schema plugin="com.google.devtools.depan.platform" id="com.google.devtools.depan.graph.registry.nodeKind" name="DepAn NodeKind Registry"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -17,8 +17,8 @@
          </appinfo>
       </annotation>
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="node_type_contributor"/>
+         <choice>
+            <element ref="node_kind_contributor" minOccurs="1" maxOccurs="unbounded"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="node_type_contributor">
+   <element name="node_kind_contributor">
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -62,7 +62,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":com.google.devtools.depan.graph.registry.NodeTypeContributor"/>
+                  <meta.attribute kind="java" basedOn=":com.google.devtools.depan.graph.registry.NodeKindContributor"/>
                </appinfo>
             </annotation>
          </attribute>

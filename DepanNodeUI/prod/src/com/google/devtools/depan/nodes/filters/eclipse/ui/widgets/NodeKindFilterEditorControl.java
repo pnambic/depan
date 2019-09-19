@@ -16,14 +16,12 @@
 
 package com.google.devtools.depan.nodes.filters.eclipse.ui.widgets;
 
+import com.google.devtools.depan.graph.registry.NodeKindRegistry;
 import com.google.devtools.depan.model.Element;
-import com.google.devtools.depan.nodes.filters.eclipse.ui.widgets.NodeKindTableControl.ElementKindDescriptor;
 import com.google.devtools.depan.nodes.filters.model.NodeKindDocument;
 import com.google.devtools.depan.nodes.filters.sequence.NodeKindFilter;
 import com.google.devtools.depan.platform.eclipse.ui.widgets.Widgets;
 import com.google.devtools.depan.resources.PropertyDocumentReference;
-
-import com.google.common.collect.ImmutableList;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Composite;
@@ -83,9 +81,10 @@ public class NodeKindFilterEditorControl
 
   @Override
   protected void updateControls() {
-    nodeTable.setInput(
-        ImmutableList.<NodeKindTableControl.ElementKindDescriptor>of());
-    Collection<ElementKindDescriptor> selection =
+    Collection<Class<? extends Element>> nodeKinds =
+        NodeKindRegistry.getRegistryNodeKinds();
+    nodeTable.setInput(nodeKinds);
+    Collection<Class<? extends Element>> selection =
         nodeTable.findDescriptors(getFilter().getNodeKinds());
     nodeTable.setSelection(selection);
   }
@@ -139,7 +138,7 @@ public class NodeKindFilterEditorControl
         PropertyDocumentReference<NodeKindDocument> ref) {
       if (null != ref) {
         Collection<Class<? extends Element>> kinds = ref.getDocument().getInfo();
-        Collection<ElementKindDescriptor> selection =
+        Collection<Class<? extends Element>> selection =
             nodeTable.findDescriptors(kinds);
         nodeTable.setSelection(selection);
       }

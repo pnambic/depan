@@ -13,19 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.devtools.depan.graph.registry;
+package com.google.devtools.depan.java;
 
-import com.google.devtools.depan.model.GraphNode;
+import com.google.devtools.depan.graph.registry.NodeKindContributor;
+import com.google.devtools.depan.java.graph.JavaElements;
+import com.google.devtools.depan.model.Element;
 
 import java.util.Collection;
 
-public interface NodeTypeContributor {
+public class JavaNodeKindContributor implements NodeKindContributor {
 
-  /**
-   * A human-sensible identifier for this collection of {@link GraphNode}s.
-   * The label is often shared with a {@code RelationContributor}.
-   */
-  String getLabel();
+  public static final String LABEL = "Java";
 
-  Collection<Class<? extends GraphNode>> getNodeTypes();
+  public static final String ID =
+      "com.google.devtools.depan.java.JavaNodeTypeContributor";
+
+  @Override
+  public String getLabel() {
+    return LABEL;
+  }
+
+  @Override
+  public Collection<Class<? extends Element>> getNodeKinds() {
+    return JavaElements.NODES;
+  }
 }

@@ -17,13 +17,14 @@
 package com.google.devtools.depan.graph_doc.model;
 
 import com.google.devtools.depan.graph.api.Relation;
-import com.google.devtools.depan.graph.registry.NodeTypeRegistry;
+import com.google.devtools.depan.graph.registry.NodeKindRegistry;
 import com.google.devtools.depan.graph.registry.RelationRegistry;
-import com.google.devtools.depan.model.GraphNode;
+import com.google.devtools.depan.model.Element;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,11 +49,14 @@ public class DependencyModel {
    * The {@code get(0)} element has the highest priority.
    */
   public List<String> getNodeTypeContribs() {
+    if (nodeContribIds.isEmpty()) {
+      return legacyHack(relationContribIds);
+    }
     return ImmutableList.copyOf(nodeContribIds);
   }
 
-  public Collection<Class<? extends GraphNode>> getNodeTypes() {
-    return NodeTypeRegistry.getRegistryNodeTypes(nodeContribIds);
+  public Collection<Class<? extends Element>> getNodeTypes() {
+    return NodeKindRegistry.getRegistryNodeKinds(nodeContribIds);
   }
 
   /**
@@ -65,7 +69,6 @@ public class DependencyModel {
   public List<String> getRelationContribs() {
     return ImmutableList.copyOf(relationContribIds);
   }
-
 
   /**
    * No implicit ordering over members of the relationship "universe".
@@ -93,7 +96,18 @@ public class DependencyModel {
 
   public static DependencyModel createFromRegistry() {
     return new DependencyModel(
-        NodeTypeRegistry.getRegistryContribIds(),
+        NodeKindRegistry.getRegistryContribIds(),
         RelationRegistry.getRegistryContribIds());
+  }
+
+  private List<String> legacyHack(List<String> contribIds) {
+    List<String> result = new ArrayList<>(contribIds.size());
+
+    for (String contrib : contribIds) {
+      String hack = contrib.replace("RelationContributor", "NodeKindContributor");
+      result.add(hack);
+    }
+
+    return result;
   }
 }
