@@ -16,7 +16,6 @@
 
 package com.google.devtools.depan.nodes.filters.eclipse.ui.filters;
 
-import com.google.devtools.depan.graph.registry.NodeKindRegistry;
 import com.google.devtools.depan.graph_doc.model.DependencyModel;
 import com.google.devtools.depan.nodes.filters.eclipse.ui.widgets.FilterEditorDialog;
 import com.google.devtools.depan.nodes.filters.eclipse.ui.widgets.NodeKindFilterEditorControl;
@@ -49,8 +48,8 @@ public class NodeKindContribution
   }
 
   @Override
-  public NodeKindFilter createElementFilter() {
-    return new NodeKindFilter(NodeKindRegistry.getRegistryNodeKinds());
+  public NodeKindFilter createElementFilter(DependencyModel model) {
+    return new NodeKindFilter(model.getNodeTypes());
   }
 
   @Override

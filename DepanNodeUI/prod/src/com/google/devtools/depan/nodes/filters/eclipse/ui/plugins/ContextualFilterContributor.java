@@ -52,7 +52,7 @@ public interface ContextualFilterContributor <T extends ContextualFilter> {
 
   Form getForm();
 
-  T createElementFilter();
+  T createElementFilter(DependencyModel model);
 
   T createWrapperFilter(ContextualFilter filter);
 

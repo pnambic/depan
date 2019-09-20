@@ -353,7 +353,7 @@ public class FilterTableEditorControl
 
   private void addNewFilter(
       ContextualFilterContributor<? extends ContextualFilter> contrib) {
-    ContextualFilter filter = contrib.createElementFilter();
+    ContextualFilter filter = contrib.createElementFilter(getModel());
     List<ContextualFilter> result = getUpdatableSteps();
     result.add(filter);
 
@@ -413,7 +413,7 @@ public class FilterTableEditorControl
     switch (contrib.getForm()) {
     case STEPS:
       ContextualFilter steps =
-          ContextualFilterContributors.createFilter(contrib, target);
+          ContextualFilterContributors.createFilter(contrib, getModel(), target);
 
       List<ContextualFilter> result = Lists.newArrayList();
       for (ContextualFilter step : source) {
@@ -428,7 +428,7 @@ public class FilterTableEditorControl
       int index = source.indexOf(target.get(0));
 
       ContextualFilter wrapper =
-          ContextualFilterContributors.createFilter(contrib, target);
+          ContextualFilterContributors.createFilter(contrib, getModel(), target);
       source.set(index, wrapper);
       return source;
     case ELEMENT:

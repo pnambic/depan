@@ -46,7 +46,7 @@ public class IncludeViewNodesFilterContribution
   }
 
   @Override
-  public ViewNodesFilter createElementFilter() {
+  public ViewNodesFilter createElementFilter(DependencyModel model) {
     return new ViewNodesFilter(
         getLabel(), "Only nodes present in view", true);
   }

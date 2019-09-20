@@ -16,6 +16,7 @@
 
 package com.google.devtools.depan.nodes.filters.eclipse.ui.filters;
 
+import com.google.devtools.depan.graph.api.Relation;
 import com.google.devtools.depan.graph.api.RelationSet;
 import com.google.devtools.depan.graph_doc.model.DependencyModel;
 import com.google.devtools.depan.model.RelationSets;
@@ -30,6 +31,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+
+import java.util.Collection;
 
 /**
  * Provides labels, {@link Form}s, factories, and dialog editors
@@ -51,8 +54,9 @@ public class RelationCountContribution
   }
 
   @Override
-  public RelationCountFilter createElementFilter() {
-    RelationSet relationSet = RelationSets.ALL;
+  public RelationCountFilter createElementFilter(DependencyModel model) {
+    Collection<Relation> modelRelations = model.getRelations();
+    RelationSet relationSet = RelationSets.createSimple(modelRelations);
     CountPredicate forwardTest = new CountPredicates.IncludeAbove(0);
     CountPredicate reverseTest = new CountPredicates.IncludeAbove(0);
     return new RelationCountFilter(relationSet, forwardTest, reverseTest);

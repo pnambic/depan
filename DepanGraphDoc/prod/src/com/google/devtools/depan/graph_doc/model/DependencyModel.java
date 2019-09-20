@@ -56,6 +56,10 @@ public class DependencyModel {
   }
 
   public Collection<Class<? extends Element>> getNodeTypes() {
+    // legacy hack
+    if (nodeContribIds.isEmpty()) {
+      return NodeKindRegistry.getRegistryNodeKinds(getNodeTypeContribs());
+    }
     return NodeKindRegistry.getRegistryNodeKinds(nodeContribIds);
   }
 

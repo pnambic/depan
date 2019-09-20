@@ -16,6 +16,7 @@
 
 package com.google.devtools.depan.nodes.filters.eclipse.ui.filters;
 
+import com.google.devtools.depan.graph_doc.model.DependencyModel;
 import com.google.devtools.depan.nodes.filters.eclipse.ui.plugins.ContextualFilterContributor;
 import com.google.devtools.depan.nodes.filters.model.ContextualFilter;
 
@@ -30,7 +31,7 @@ public abstract class AbstractFilterContribution<T extends ContextualFilter>
     implements ContextualFilterContributor<T> {
 
   @Override
-  public T createElementFilter() {
+  public T createElementFilter(DependencyModel model) {
     throw buildUnsupported("element");
   }
 

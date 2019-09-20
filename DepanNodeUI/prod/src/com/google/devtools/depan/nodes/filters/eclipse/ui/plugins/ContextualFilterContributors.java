@@ -16,6 +16,7 @@
 
 package com.google.devtools.depan.nodes.filters.eclipse.ui.plugins;
 
+import com.google.devtools.depan.graph_doc.model.DependencyModel;
 import com.google.devtools.depan.nodes.filters.model.ContextualFilter;
 
 import java.util.List;
@@ -30,10 +31,12 @@ public class ContextualFilterContributors {
   }
 
   public static ContextualFilter createFilter(
-      ContextualFilterContributor<? extends ContextualFilter> contrib, List<ContextualFilter> filters) {
+      ContextualFilterContributor<? extends ContextualFilter> contrib,
+      DependencyModel model,
+      List<ContextualFilter> filters) {
     switch (contrib.getForm()) {
     case ELEMENT:
-      return contrib.createElementFilter();
+      return contrib.createElementFilter(model);
     case GROUP:
       return contrib.createGroupFilter(filters);
     case STEPS:

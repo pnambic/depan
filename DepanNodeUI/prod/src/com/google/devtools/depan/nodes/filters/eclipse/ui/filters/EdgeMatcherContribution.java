@@ -48,7 +48,7 @@ public class EdgeMatcherContribution
   }
 
   @Override
-  public EdgeMatcherFilter createElementFilter() {
+  public EdgeMatcherFilter createElementFilter(DependencyModel model) {
     return new EdgeMatcherFilter(GraphEdgeMatchers.FORWARD);
   }
 
