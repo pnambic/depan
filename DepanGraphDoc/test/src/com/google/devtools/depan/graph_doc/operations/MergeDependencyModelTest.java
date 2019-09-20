@@ -113,7 +113,7 @@ public class MergeDependencyModelTest {
 
   private void assertEquals(
       DependencyModel expected, DependencyModel actual) {
-    assertEquals(expected.getNodeContribs(), actual.getNodeContribs());
+    assertEquals(expected.getNodeKindContribs(), actual.getNodeKindContribs());
     assertEquals(expected.getRelationContribs(), actual.getRelationContribs());
   }
 

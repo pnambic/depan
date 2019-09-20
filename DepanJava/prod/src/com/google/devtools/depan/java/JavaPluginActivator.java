@@ -50,8 +50,8 @@ public class JavaPluginActivator implements BundleActivator {
     DependencyModel.Builder result = new DependencyModel.Builder();
     result.addRelationContrib(JavaRelationContributor.ID);
     result.addRelationContrib(FileSystemRelationContributor.ID);
-    result.addNodeTypeContrib(JavaNodeKindContributor.ID);
-    result.addNodeTypeContrib(FileSystemNodeKindContributor.ID);
+    result.addNodeKindContrib(JavaNodeKindContributor.ID);
+    result.addNodeKindContrib(FileSystemNodeKindContributor.ID);
     return result.build();
   }
 }

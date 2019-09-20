@@ -42,16 +42,16 @@ import java.util.List;
 public class MergeDependencyModel {
 
   // Dependency Model
-  private List<String> currNodes = Lists.newArrayList();
+  private List<String> currNodeKinds = Lists.newArrayList();
 
-  private List<String> currRels = Lists.newArrayList();
+  private List<String> currRelations = Lists.newArrayList();
 
   public DependencyModel getDependencyModel() {
-    DependencyModel result = new DependencyModel(currNodes, currRels);
+    DependencyModel result = new DependencyModel(currNodeKinds, currRelations);
 
     // Release all internal state
-    currNodes = null;
-    currRels = null;
+    currNodeKinds = null;
+    currRelations = null;
 
     return result;
   }
@@ -61,8 +61,8 @@ public class MergeDependencyModel {
    * @param dependencyModel
    */
   public void merge(DependencyModel depModel) {
-    editContribOrder(currNodes, depModel.getNodeTypeContribs());
-    editContribOrder(currRels, depModel.getRelationContribs());
+    editContribOrder(currNodeKinds, depModel.getNodeKindContribs());
+    editContribOrder(currRelations, depModel.getRelationContribs());
   }
 
   /**

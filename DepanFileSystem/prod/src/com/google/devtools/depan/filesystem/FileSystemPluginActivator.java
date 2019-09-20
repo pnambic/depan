@@ -42,7 +42,7 @@ public class FileSystemPluginActivator implements BundleActivator {
   private static DependencyModel buildDependencyModel() {
     DependencyModel.Builder result = new DependencyModel.Builder();
     result.addRelationContrib(FileSystemRelationContributor.ID);
-    result.addNodeTypeContrib(FileSystemNodeKindContributor.ID);
+    result.addNodeKindContrib(FileSystemNodeKindContributor.ID);
     return result.build();
   }
 }

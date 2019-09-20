@@ -37,7 +37,7 @@ public class FeatureMatcher implements ModelMatcher {
   @Override
   public boolean forModel(DependencyModel check) {
     if (isListed(
-        check.getNodeTypeContribs(), model.getNodeTypeContribs())) {
+        check.getNodeKindContribs(), model.getNodeKindContribs())) {
       return true;
     }
     if (isListed(

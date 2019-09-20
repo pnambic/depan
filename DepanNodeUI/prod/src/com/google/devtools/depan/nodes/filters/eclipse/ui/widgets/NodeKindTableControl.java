@@ -60,7 +60,7 @@ import java.util.List;
  */
 public class NodeKindTableControl extends Composite {
 
-  private static final String COL_KIND = "Element Type";
+  private static final String COL_KIND = "Element Kind";
   private static final String COL_SOURCE = "Source";
 
   public static final int INDEX_KIND = 0;
@@ -335,7 +335,7 @@ public class NodeKindTableControl extends Composite {
         case 0:
           return nodeKind.getSimpleName();
         case 1:
-          return getSourceLabelForNodeType(nodeKind);
+          return getSourceLabelForNodeKind(nodeKind);
         }
       }
 
@@ -343,7 +343,8 @@ public class NodeKindTableControl extends Composite {
     }
   }
 
-  private static String getSourceLabelForNodeType(Class<? extends Element> nodeType) {
-    return NodeKindRegistry.getRegistryNodeKindSource(nodeType);
+  private static String getSourceLabelForNodeKind(
+      Class<? extends Element> nodeKind) {
+    return NodeKindRegistry.getRegistryNodeKindSource(nodeKind);
   }
 }

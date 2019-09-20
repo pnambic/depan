@@ -183,7 +183,7 @@ public class GraphResourceBuilder {
     if (model.getRelationContribs().contains(propVal)) {
       return propVal;
     }
-    if (model.getNodeTypeContribs().contains(propVal)) {
+    if (model.getNodeKindContribs().contains(propVal)) {
       return propVal;
     }
     return null;

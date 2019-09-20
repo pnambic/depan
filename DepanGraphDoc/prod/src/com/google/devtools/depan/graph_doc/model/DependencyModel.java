@@ -35,12 +35,12 @@ import java.util.List;
  */
 public class DependencyModel {
 
-  private final List<String> nodeContribIds;
+  private final List<String> nodeKindContribIds;
   private final List<String> relationContribIds;
 
   public DependencyModel(
       List<String> nodeContribIds, List<String> relationContribIds) {
-    this.nodeContribIds = nodeContribIds;
+    this.nodeKindContribIds = nodeContribIds;
     this.relationContribIds = relationContribIds;
   }
 
@@ -48,19 +48,19 @@ public class DependencyModel {
    * Order implies priority.
    * The {@code get(0)} element has the highest priority.
    */
-  public List<String> getNodeTypeContribs() {
-    if (nodeContribIds.isEmpty()) {
+  public List<String> getNodeKindContribs() {
+    if (nodeKindContribIds.isEmpty()) {
       return legacyHack(relationContribIds);
     }
-    return ImmutableList.copyOf(nodeContribIds);
+    return ImmutableList.copyOf(nodeKindContribIds);
   }
 
-  public Collection<Class<? extends Element>> getNodeTypes() {
+  public Collection<Class<? extends Element>> getNodeKinds() {
     // legacy hack
-    if (nodeContribIds.isEmpty()) {
-      return NodeKindRegistry.getRegistryNodeKinds(getNodeTypeContribs());
+    if (nodeKindContribIds.isEmpty()) {
+      return NodeKindRegistry.getRegistryNodeKinds(getNodeKindContribs());
     }
-    return NodeKindRegistry.getRegistryNodeKinds(nodeContribIds);
+    return NodeKindRegistry.getRegistryNodeKinds(nodeKindContribIds);
   }
 
   /**
@@ -85,7 +85,7 @@ public class DependencyModel {
     private final List<String> nodeContribIds = Lists.newArrayList();
     private final List<String> relationContribIds = Lists.newArrayList();
 
-    public void addNodeTypeContrib(String nodeContribId) {
+    public void addNodeKindContrib(String nodeContribId) {
       nodeContribIds.add(nodeContribId);
     }
 

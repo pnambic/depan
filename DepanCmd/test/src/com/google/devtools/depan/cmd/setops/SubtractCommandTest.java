@@ -47,7 +47,7 @@ public class SubtractCommandTest {
     assertEquals(1, testNodes.size());
     assertEquals("node 4", testNodes.iterator().next().getId());
 
-    assertEquals(0, diff.getDependencyModel().getNodeContribs().size());
+    assertEquals(0, diff.getDependencyModel().getNodeKindContribs().size());
     assertEquals(0, diff.getDependencyModel().getRelationContribs().size());
   }
 
@@ -68,7 +68,7 @@ public class SubtractCommandTest {
     Collection<GraphNode> testNodes = diff.getNodes();
     assertEquals(5, testNodes.size());
 
-    assertEquals(0, diff.getDependencyModel().getNodeContribs().size());
+    assertEquals(0, diff.getDependencyModel().getNodeKindContribs().size());
     assertEquals(0, diff.getDependencyModel().getRelationContribs().size());
   }
 

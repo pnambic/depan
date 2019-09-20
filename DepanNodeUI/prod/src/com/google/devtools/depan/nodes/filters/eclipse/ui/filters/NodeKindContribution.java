@@ -49,7 +49,7 @@ public class NodeKindContribution
 
   @Override
   public NodeKindFilter createElementFilter(DependencyModel model) {
-    return new NodeKindFilter(model.getNodeTypes());
+    return new NodeKindFilter(model.getNodeKinds());
   }
 
   @Override
