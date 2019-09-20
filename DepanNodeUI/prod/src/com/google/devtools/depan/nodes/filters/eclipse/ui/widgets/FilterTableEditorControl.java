@@ -47,8 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Enhances {@link SteppingFilter} editing with a
- * {@link FilterTableControl}.
+ * Enhances {@link SteppingFilter} editing with a {@link FilterTableControl}.
  * 
  * Show a table of {@link ContextualFilter}s, suitable for editing.
  * 
@@ -121,8 +120,8 @@ public class FilterTableEditorControl
     }
   }
 
-  private void addItemMenuActions(
-      IMenuManager mgr, List<ContextualFilter> selection) {
+  private void addItemMenuActions(IMenuManager mgr,
+      List<ContextualFilter> selection) {
     if (selection.size() == 1) {
       mgr.add(new EditAction("Edit", selection.get(0)));
     }
@@ -133,8 +132,7 @@ public class FilterTableEditorControl
   private void addElementMenuActions(
       Collection<ContextualFilterContributor<? extends ContextualFilter>> filters,
       IMenuManager mgr) {
-    for (ContextualFilterContributor<? extends ContextualFilter>
-        filter : filters) {
+    for (ContextualFilterContributor<? extends ContextualFilter> filter : filters) {
       Action action = new ElementAction(filter.getLabel(), filter);
       mgr.add(action);
     }
@@ -143,37 +141,34 @@ public class FilterTableEditorControl
   private void addSelectionMenuActions(
       Collection<ContextualFilterContributor<? extends ContextualFilter>> filters,
       IMenuManager mgr) {
-    for (ContextualFilterContributor<? extends ContextualFilter>
-        filter : filters) {
+    for (ContextualFilterContributor<? extends ContextualFilter> filter : filters) {
       Action action = new SelectionAction(filter.getLabel(), filter);
       mgr.add(action);
     }
   }
 
-  private Collection<ContextualFilterContributor<? extends ContextualFilter>>
-      getNoneSelectedItems() {
-    return choiceItems(EnumSet.of(Form.ELEMENT) );
+  private Collection<ContextualFilterContributor<? extends ContextualFilter>> getNoneSelectedItems() {
+    return choiceItems(EnumSet.of(Form.ELEMENT));
   }
 
-  private Collection<ContextualFilterContributor<? extends ContextualFilter>>
-      getSingleSelectItems() {
-    return choiceItems(EnumSet.of(Form.WRAPPER, Form.GROUP, Form.STEPS) );
+  private Collection<ContextualFilterContributor<? extends ContextualFilter>> getSingleSelectItems() {
+    return choiceItems(EnumSet.of(Form.WRAPPER, Form.GROUP, Form.STEPS));
   }
 
-  private Collection<ContextualFilterContributor<? extends ContextualFilter>>
-      getMulitSelectItems() {
-    return choiceItems(EnumSet.of(Form.GROUP, Form.STEPS) );
+  private Collection<ContextualFilterContributor<? extends ContextualFilter>> getMulitSelectItems() {
+    return choiceItems(EnumSet.of(Form.GROUP, Form.STEPS));
   }
 
-  private Collection<ContextualFilterContributor<? extends ContextualFilter>>
-      choiceItems(EnumSet<ContextualFilterContributor.Form> formSet) {
-    Map<String, ContextualFilterContributor<? extends ContextualFilter>>
-        filters = ContextualFilterRegistry.getRegistryContributionMap();
-    Collection<ContextualFilterContributor<? extends ContextualFilter>>
-        result = Lists.newArrayList();
+  private Collection<ContextualFilterContributor<? extends ContextualFilter>> choiceItems(
+      EnumSet<ContextualFilterContributor.Form> formSet) {
 
-    for (ContextualFilterContributor<? extends ContextualFilter>
-        filter : filters.values()) {
+    Map<String, ContextualFilterContributor<? extends ContextualFilter>> filters =
+        ContextualFilterRegistry.getRegistryContributionMap();
+    Collection<ContextualFilterContributor<? extends ContextualFilter>> result =
+        Lists.newArrayList();
+
+    for (ContextualFilterContributor<? extends ContextualFilter> filter : filters
+        .values()) {
       if (formSet.contains(filter.getForm())) {
         result.add(filter);
       }
@@ -211,8 +206,7 @@ public class FilterTableEditorControl
 
   private class ElementAction extends Action {
 
-    private final ContextualFilterContributor<? extends ContextualFilter>
-        contrib;
+    private final ContextualFilterContributor<? extends ContextualFilter> contrib;
 
     public ElementAction(String label,
         ContextualFilterContributor<? extends ContextualFilter> contrib) {
@@ -227,8 +221,7 @@ public class FilterTableEditorControl
 
   private class SelectionAction extends Action {
 
-    private final ContextualFilterContributor<? extends ContextualFilter>
-        contrib;
+    private final ContextualFilterContributor<? extends ContextualFilter> contrib;
 
     public SelectionAction(String label,
         ContextualFilterContributor<? extends ContextualFilter> contrib) {
@@ -286,7 +279,8 @@ public class FilterTableEditorControl
       }
     });
 
-    Button selectionButton = Widgets.buildCompactPushButton(result, "Selection");
+    Button selectionButton = Widgets.buildCompactPushButton(result,
+        "Selection");
     selectionButton.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
@@ -365,8 +359,8 @@ public class FilterTableEditorControl
       return;
     }
     PropertyDocumentReference<ContextualFilterDocument> ref =
-        ContextualFilterSaveLoadConfig.CONFIG.loadResource(
-            getShell(), getProject());
+        ContextualFilterSaveLoadConfig.CONFIG
+            .loadResource(getShell(), getProject());
     if (null == ref) {
       return;
     }
